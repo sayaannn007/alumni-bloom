@@ -14,16 +14,361 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      connections: {
+        Row: {
+          created_at: string
+          id: string
+          recipient_id: string
+          requester_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipient_id: string
+          requester_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          requester_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connections_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connections_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          profile_id: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          profile_id: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          profile_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          event_date: string
+          id: string
+          image_url: string | null
+          is_virtual: boolean | null
+          location: string | null
+          max_attendees: number | null
+          meeting_link: string | null
+          organizer_id: string | null
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          event_date: string
+          id?: string
+          image_url?: string | null
+          is_virtual?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          meeting_link?: string | null
+          organizer_id?: string | null
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          event_date?: string
+          id?: string
+          image_url?: string | null
+          is_virtual?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          meeting_link?: string | null
+          organizer_id?: string | null
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_applications: {
+        Row: {
+          applicant_id: string
+          cover_letter: string | null
+          created_at: string
+          id: string
+          job_id: string
+          resume_url: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          applicant_id: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          resume_url?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applicant_id?: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          resume_url?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          application_url: string | null
+          company: string
+          contact_email: string | null
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          job_type: string | null
+          location: string | null
+          posted_by: string | null
+          requirements: string | null
+          salary_range: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_url?: string | null
+          company: string
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_url?: string | null
+          company?: string
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          batch_year: number | null
+          bio: string | null
+          company: string | null
+          created_at: string
+          email: string
+          email_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          full_name: string | null
+          id: string
+          industry: string | null
+          job_title: string | null
+          linkedin_url: string | null
+          location: string | null
+          location_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          phone: string | null
+          phone_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          batch_year?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          email_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          full_name?: string | null
+          id?: string
+          industry?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          phone?: string | null
+          phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          batch_year?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          email_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          full_name?: string | null
+          id?: string
+          industry?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          phone?: string | null
+          phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      are_connected: {
+        Args: { _profile1: string; _profile2: string }
+        Returns: boolean
+      }
+      get_profile_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
+      privacy_level: "public" | "alumni_only" | "connections_only" | "private"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +495,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+      privacy_level: ["public", "alumni_only", "connections_only", "private"],
+    },
   },
 } as const
