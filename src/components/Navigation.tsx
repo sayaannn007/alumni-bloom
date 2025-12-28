@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, Users, Calendar, Briefcase, User, Search } from "lucide-react";
+import { Menu, X, Users, Calendar, Briefcase, User, Search, MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { label: "Directory", icon: Users, href: "/#directory" },
   { label: "Events", icon: Calendar, href: "/events" },
   { label: "Jobs", icon: Briefcase, href: "/jobs" },
+  { label: "Messages", icon: MessageSquare, href: "/messages" },
 ];
 
 export function Navigation() {
