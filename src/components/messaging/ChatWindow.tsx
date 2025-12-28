@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,21 +11,30 @@ import type { Message } from "@/hooks/useMessages";
 interface ChatWindowProps {
   messages: Message[];
   currentProfileId: string | null;
+  recipientId: string | null;
   recipientName: string | null;
   recipientAvatar: string | null;
+  isOnline: boolean;
+  isTyping: boolean;
   onSendMessage: (content: string) => Promise<boolean>;
+  onTyping: (recipientId: string, isTyping: boolean) => void;
 }
 
 export function ChatWindow({
   messages,
   currentProfileId,
+  recipientId,
   recipientName,
   recipientAvatar,
+  isOnline,
+  isTyping,
   onSendMessage,
+  onTyping,
 }: ChatWindowProps) {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Scroll to bottom on new messages
@@ -34,8 +43,45 @@ export function ChatWindow({
     }
   }, [messages]);
 
+  // Handle typing indicator
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setNewMessage(e.target.value);
+
+      if (recipientId && e.target.value.length > 0) {
+        // Send typing indicator
+        onTyping(recipientId, true);
+
+        // Clear existing timeout
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+
+        // Stop typing after 2 seconds of inactivity
+        typingTimeoutRef.current = setTimeout(() => {
+          onTyping(recipientId, false);
+        }, 2000);
+      } else if (recipientId) {
+        // Stopped typing (empty message)
+        onTyping(recipientId, false);
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+      }
+    },
+    [recipientId, onTyping]
+  );
+
   const handleSend = async () => {
     if (!newMessage.trim() || sending) return;
+
+    // Stop typing indicator when sending
+    if (recipientId) {
+      onTyping(recipientId, false);
+    }
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
 
     setSending(true);
     const success = await onSendMessage(newMessage.trim());
@@ -51,6 +97,15 @@ export function ChatWindow({
       handleSend();
     }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!recipientName) {
     return (
@@ -68,14 +123,32 @@ export function ChatWindow({
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-border">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={recipientAvatar || undefined} />
-          <AvatarFallback className="bg-primary/20 text-primary">
-            {recipientName.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
+        <div className="relative">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={recipientAvatar || undefined} />
+            <AvatarFallback className="bg-primary/20 text-primary">
+              {recipientName.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          {/* Online indicator */}
+          <span
+            className={cn(
+              "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background",
+              isOnline ? "bg-green-500" : "bg-muted-foreground/50"
+            )}
+          />
+        </div>
         <div>
           <h3 className="font-semibold">{recipientName}</h3>
+          <p className="text-xs text-muted-foreground">
+            {isTyping ? (
+              <span className="text-primary">typing...</span>
+            ) : isOnline ? (
+              <span className="text-green-500">Online</span>
+            ) : (
+              "Offline"
+            )}
+          </p>
         </div>
       </div>
 
@@ -116,6 +189,19 @@ export function ChatWindow({
               </div>
             );
           })}
+          
+          {/* Typing indicator in chat */}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
@@ -124,7 +210,7 @@ export function ChatWindow({
         <div className="flex gap-2">
           <Input
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             className="flex-1"
