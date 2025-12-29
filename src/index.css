@@ -124,7 +124,8 @@
   /* Glass Glow Effect */
   .glass-glow {
     box-shadow: 
-      0 0 40px hsl(var(--glass-glow)),
+      0 0 60px hsl(var(--glass-glow)),
+      0 0 100px hsl(185 100% 50% / 0.15),
       0 8px 32px 0 rgba(0, 0, 0, 0.37),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   }
@@ -148,7 +149,7 @@
   .btn-liquid {
     @apply relative overflow-hidden;
     background: var(--gradient-aurora);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .btn-liquid::before {
@@ -158,19 +159,41 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: hsl(0 0% 100% / 0.3);
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     transition: width 0.6s ease, height 0.6s ease;
   }
 
   .btn-liquid:hover::before {
-    width: 300%;
-    height: 300%;
+    width: 400%;
+    height: 400%;
   }
 
   .btn-liquid-green {
     background: var(--gradient-aurora-green);
+  }
+
+  /* Premium Hover Effects */
+  .hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 20px 40px rgba(0, 242, 254, 0.15),
+      0 0 60px rgba(0, 242, 254, 0.1);
+  }
+
+  .magnetic-hover {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .magnetic-hover:hover {
+    box-shadow: 
+      0 10px 40px -10px rgba(0, 242, 254, 0.5),
+      0 0 20px rgba(0, 242, 254, 0.2);
   }
 
   /* Floating Animation */
@@ -181,6 +204,75 @@
   .float-delayed {
     animation: float 6s ease-in-out infinite;
     animation-delay: -3s;
+  }
+
+  /* Premium Card Hover */
+  .premium-card {
+    @apply relative overflow-hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.7s ease;
+  }
+
+  .premium-card:hover::before {
+    left: 100%;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+      0 30px 60px -15px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(0, 242, 254, 0.15);
+  }
+
+  /* Iridescent border effect */
+  .iridescent-border {
+    position: relative;
+  }
+
+  .iridescent-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      hsl(185 100% 50%),
+      hsl(280 100% 60%),
+      hsl(155 100% 50%),
+      hsl(185 100% 50%)
+    );
+    background-size: 300% 300%;
+    animation: gradient-shift 4s ease infinite;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: 
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .iridescent-border:hover::before {
+    opacity: 1;
   }
 }
 
@@ -240,6 +332,41 @@
   }
 }
 
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px hsl(185 100% 50% / 0.3),
+      0 0 40px hsl(185 100% 50% / 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px hsl(185 100% 50% / 0.5),
+      0 0 80px hsl(185 100% 50% / 0.2),
+      0 0 120px hsl(280 100% 60% / 0.1);
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-blob {
   animation: blob 8s ease-in-out infinite;
 }
@@ -270,4 +397,35 @@
 
 .animate-orbit-reverse {
   animation: orbit 15s linear infinite reverse;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(185 100% 50%) 0%,
+    hsl(280 100% 60%) 25%,
+    hsl(155 100% 50%) 50%,
+    hsl(280 100% 60%) 75%,
+    hsl(185 100% 50%) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 3s linear infinite;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
