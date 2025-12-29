@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { User, Briefcase, MapPin, GraduationCap, Shield, Linkedin, Phone, Mail, Loader2, Save, LogOut } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
+import { ProfileSuggestions } from "@/components/ProfileSuggestions";
 
 type PrivacyLevel = Database["public"]["Enums"]["privacy_level"];
 
@@ -145,6 +146,10 @@ export default function Profile() {
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
+          </div>
+
+          <div className="mb-6">
+            <ProfileSuggestions profile={profile} />
           </div>
 
           <GlassCard glow className="p-6">
