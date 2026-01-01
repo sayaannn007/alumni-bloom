@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "next-themes";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/transitions";
+import { CursorTrail } from "@/components/effects/CursorTrail";
+import { ClickExplosion } from "@/components/effects/ClickExplosion";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
@@ -83,6 +85,10 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
       <AuthProvider>
         <TooltipProvider>
+          {/* Global cursor effects */}
+          <CursorTrail />
+          <ClickExplosion />
+          
           <Toaster />
           <Sonner />
           <BrowserRouter>
