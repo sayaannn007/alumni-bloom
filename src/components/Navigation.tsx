@@ -6,6 +6,7 @@ import { Menu, X, Users, Calendar, Briefcase, User, Search, MessageSquare } from
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { MagneticWrapper, GradientRipple } from "@/components/transitions";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navItems = [
   { label: "Directory", icon: Users, href: "/#directory" },
@@ -100,6 +101,10 @@ export function Navigation() {
 
           {/* Right Section */}
           <div className="flex items-center gap-3">
+            <MagneticWrapper strength={0.2}>
+              <ThemeToggle />
+            </MagneticWrapper>
+            
             <MagneticWrapper strength={0.2}>
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                 <Button variant="ghost" size="icon" className="hidden sm:flex">
