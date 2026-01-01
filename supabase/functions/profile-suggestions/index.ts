@@ -1,21 +1,27 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface ProfileData {
-  full_name: string | null;
-  bio: string | null;
-  batch_year: number | null;
-  location: string | null;
-  job_title: string | null;
-  company: string | null;
-  industry: string | null;
-  linkedin_url: string | null;
-  phone: string | null;
-}
+// Input validation schema with reasonable limits
+const ProfileSchema = z.object({
+  full_name: z.string().max(200).nullable().optional(),
+  bio: z.string().max(2000).nullable().optional(),
+  batch_year: z.number().int().min(1900).max(2100).nullable().optional(),
+  location: z.string().max(200).nullable().optional(),
+  job_title: z.string().max(200).nullable().optional(),
+  company: z.string().max(200).nullable().optional(),
+  industry: z.string().max(200).nullable().optional(),
+  linkedin_url: z.string().max(500).nullable().optional(),
+  phone: z.string().max(50).nullable().optional(),
+});
+
+const RequestSchema = z.object({
+  profile: ProfileSchema,
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -23,7 +29,23 @@ serve(async (req) => {
   }
 
   try {
-    const { profile } = await req.json() as { profile: ProfileData };
+    const body = await req.json();
+    
+    // Validate input with Zod
+    const parseResult = RequestSchema.safeParse(body);
+    
+    if (!parseResult.success) {
+      console.error("Validation error:", parseResult.error.errors);
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid profile data",
+          details: parseResult.error.errors.map(e => e.message)
+        }), 
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    const { profile } = parseResult.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
