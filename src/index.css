@@ -6,7 +6,68 @@
 
 @layer base {
   :root {
-    /* Deep Space Background */
+    /* Light Theme - Clean & Elegant */
+    --background: 220 20% 97%;
+    --foreground: 230 30% 15%;
+
+    /* Card Surface */
+    --card: 0 0% 100%;
+    --card-foreground: 230 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 30% 15%;
+
+    /* Aurora Primary - Cyan */
+    --primary: 185 85% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Purple */
+    --secondary: 280 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 220 20% 92%;
+    --muted-foreground: 220 15% 45%;
+
+    /* Aurora Accent - Green */
+    --accent: 155 80% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders */
+    --border: 220 20% 88%;
+    --input: 220 20% 92%;
+    --ring: 185 85% 45%;
+
+    --radius: 1rem;
+
+    /* Custom Glass Variables - Light */
+    --glass-bg: 0 0% 0% / 0.03;
+    --glass-border: 0 0% 0% / 0.08;
+    --glass-blur: 20px;
+    --glass-glow: 185 85% 50% / 0.2;
+
+    /* Aurora Gradients - Light */
+    --gradient-aurora: linear-gradient(135deg, hsl(185 85% 45%) 0%, hsl(280 70% 55%) 100%);
+    --gradient-aurora-green: linear-gradient(135deg, hsl(155 80% 40%) 0%, hsl(250 70% 55%) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(220 20% 97%) 0%, hsl(240 25% 95%) 50%, hsl(220 30% 96%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(35 90% 55%) 0%, hsl(350 85% 55%) 100%);
+
+    /* Sidebar - Light */
+    --sidebar-background: 220 20% 96%;
+    --sidebar-foreground: 230 30% 20%;
+    --sidebar-primary: 185 85% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 92%;
+    --sidebar-accent-foreground: 230 30% 15%;
+    --sidebar-border: 220 20% 88%;
+    --sidebar-ring: 185 85% 45%;
+  }
+
+  .dark {
+    /* Dark Theme - Deep Space */
     --background: 230 60% 8%;
     --foreground: 210 40% 98%;
 
@@ -33,7 +94,7 @@
     --accent: 155 100% 50%;
     --accent-foreground: 230 60% 8%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 210 40% 98%;
 
     /* Glass Borders */
@@ -41,21 +102,19 @@
     --input: 230 30% 20%;
     --ring: 185 100% 50%;
 
-    --radius: 1rem;
-
-    /* Custom Glass Variables */
+    /* Custom Glass Variables - Dark */
     --glass-bg: 0 0% 100% / 0.08;
     --glass-border: 0 0% 100% / 0.15;
     --glass-blur: 20px;
     --glass-glow: 185 100% 60% / 0.3;
 
-    /* Aurora Gradients */
+    /* Aurora Gradients - Dark */
     --gradient-aurora: linear-gradient(135deg, hsl(185 100% 50%) 0%, hsl(280 100% 60%) 100%);
     --gradient-aurora-green: linear-gradient(135deg, hsl(155 100% 50%) 0%, hsl(250 100% 60%) 100%);
     --gradient-background: linear-gradient(135deg, hsl(230 60% 8%) 0%, hsl(270 40% 12%) 50%, hsl(220 50% 15%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(35 100% 50%) 0%, hsl(350 100% 55%) 100%);
 
-    /* Sidebar (dark themed) */
+    /* Sidebar - Dark */
     --sidebar-background: 230 40% 6%;
     --sidebar-foreground: 210 40% 90%;
     --sidebar-primary: 185 100% 50%;
@@ -65,39 +124,23 @@
     --sidebar-border: 230 30% 20%;
     --sidebar-ring: 185 100% 50%;
   }
-
-  .dark {
-    --background: 230 60% 8%;
-    --foreground: 210 40% 98%;
-    --card: 230 30% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 230 30% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 185 100% 50%;
-    --primary-foreground: 230 60% 8%;
-    --secondary: 280 100% 60%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 230 30% 15%;
-    --muted-foreground: 210 20% 70%;
-    --accent: 155 100% 50%;
-    --accent-foreground: 230 60% 8%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 210 30% 30%;
-    --input: 230 30% 20%;
-    --ring: 185 100% 50%;
-  }
 }
 
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.3s ease;
+  }
+
+  html {
+    transition: background-color 0.4s ease;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background: var(--gradient-background);
     min-height: 100vh;
+    transition: background 0.5s ease, color 0.3s ease;
   }
 }
 
