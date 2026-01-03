@@ -8,6 +8,8 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { CTASection } from "@/components/CTASection";
 import { AlumniDirectory } from "@/components/AlumniDirectory";
 import { Footer } from "@/components/Footer";
+import { TimelineSection } from "@/components/TimelineSection";
+import { ParallaxBackground } from "@/components/effects/ParallaxBackground";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 const Index = () => {
@@ -19,7 +21,10 @@ const Index = () => {
   });
 
   return (
-    <div className="min-h-screen overflow-x-hidden smooth-scroll">
+    <div className="min-h-screen overflow-x-hidden smooth-scroll relative">
+      {/* Parallax Background */}
+      <ParallaxBackground />
+      
       {/* Scroll Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-[100] origin-left"
@@ -27,11 +32,12 @@ const Index = () => {
       />
       
       <Navigation />
-      <main>
+      <main className="relative z-10">
         <HeroSection />
         <DashboardCards />
         <FeaturesSection />
         <NetworkSection />
+        <TimelineSection />
         <StatsShowcase />
         <TestimonialsSection />
         <AlumniDirectory />

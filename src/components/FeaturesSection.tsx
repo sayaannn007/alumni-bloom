@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Scene3D } from "@/components/3d/Scene3D";
 import { LookingEyes } from "@/components/3d/LookingEyes";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/transitions/ScrollReveal";
@@ -33,12 +34,29 @@ const features = [
 ];
 
 export function FeaturesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.2, 0.9]);
+
   return (
-    <section className="py-32 px-4 relative overflow-hidden">
-      {/* Background Elements */}
+    <section ref={sectionRef} className="py-32 px-4 relative overflow-hidden">
+      {/* Background Elements with parallax */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[200px]" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-[150px]" />
+        <motion.div 
+          className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[200px]" 
+          style={{ y: bgY1, scale: bgScale }}
+        />
+        <motion.div 
+          className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-[150px]" 
+          style={{ y: bgY2 }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto relative">

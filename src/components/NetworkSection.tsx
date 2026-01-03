@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Users, MessageCircle, Briefcase, Globe, Zap, Shield } from "lucide-react";
 import { ScrollReveal } from "@/components/transitions/ScrollReveal";
@@ -66,23 +67,35 @@ const itemVariants = {
 };
 
 export function NetworkSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const orbY1 = useTransform(scrollYProgress, [0, 1], [100, -200]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], [-50, -250]);
+  const orbScale1 = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.3, 1]);
+  const orbScale2 = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.2, 0.9]);
+
   return (
-    <section className="relative py-24 px-4 overflow-hidden">
-      {/* Background effects */}
+    <section ref={sectionRef} className="relative py-24 px-4 overflow-hidden">
+      {/* Background effects with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-[100px]"
+          style={{ y: orbY1, scale: orbScale1 }}
           animate={{
             x: [0, 50, 0],
-            y: [0, -30, 0],
           }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-secondary/10 blur-[100px]"
+          style={{ y: orbY2, scale: orbScale2 }}
           animate={{
             x: [0, -50, 0],
-            y: [0, 30, 0],
           }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
