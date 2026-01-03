@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/GlassCard";
 import { HeroScene } from "@/components/3d/HeroScene";
 import { Search, Users, ArrowRight, Sparkles } from "lucide-react";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const floatingAvatars = [
   { id: 1, delay: 0, position: "top-20 left-[10%]", size: "w-12 h-12" },
@@ -51,28 +51,42 @@ const glowVariants = {
 
 export function HeroSection() {
   const [searchFocused, setSearchFocused] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Parallax transforms for background elements
+  const orbY1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const orbScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.3]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 px-4">
+    <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 px-4">
       {/* 3D Background Scene */}
       <HeroScene />
 
       {/* Gradient overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80 pointer-events-none" />
 
-      {/* Animated glow orbs (2D fallback/enhancement) */}
+      {/* Animated glow orbs with parallax */}
       <motion.div
         className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-aurora-cyan/20 blur-[120px]"
         variants={glowVariants}
         initial="initial"
         animate="animate"
+        style={{ y: orbY1, scale: orbScale }}
       />
       <motion.div
         className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-aurora-purple/20 blur-[100px]"
         variants={glowVariants}
         initial="initial"
         animate="animate"
-        style={{ animationDelay: "2s" }}
+        style={{ y: orbY2 }}
       />
 
       {/* Floating Alumni Avatars */}
@@ -98,12 +112,13 @@ export function HeroSection() {
         </motion.div>
       ))}
 
-      {/* Hero Content */}
+      {/* Hero Content with parallax */}
       <motion.div
         className="relative z-10 max-w-4xl mx-auto text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
+        style={{ y: contentY, opacity: contentOpacity }}
       >
         {/* Badge */}
         <motion.div
