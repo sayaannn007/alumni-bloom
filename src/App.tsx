@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/transitions";
 import { CursorTrail } from "@/components/effects/CursorTrail";
 import { ClickExplosion } from "@/components/effects/ClickExplosion";
+import { FloatingNav } from "@/components/FloatingNav";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
@@ -88,6 +89,7 @@ const App = () => (
           {/* Global cursor effects */}
           <CursorTrail />
           <ClickExplosion />
+          <FloatingNav />
           
           <Toaster />
           <Sonner />

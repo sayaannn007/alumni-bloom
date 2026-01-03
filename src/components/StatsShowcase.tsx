@@ -1,31 +1,11 @@
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import { Float, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { HolographicCube } from "@/components/3d/HolographicCube";
 import { NeonRings } from "@/components/3d/NeonRings";
 import { FloatingDiamond } from "@/components/3d/FloatingDiamond";
-
-interface AnimatedNumberProps {
-  value: number;
-  suffix?: string;
-  duration?: number;
-}
-
-function AnimatedNumber({ value, suffix = "", duration = 2 }: AnimatedNumberProps) {
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const displayValue = useTransform(rounded, (latest) => `${latest.toLocaleString()}${suffix}`);
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const controls = animate(count, value, { duration, ease: "easeOut" });
-    return controls.stop;
-  }, [count, value, duration]);
-
-  return <motion.span ref={ref}>{displayValue}</motion.span>;
-}
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 
 const stats = [
   { value: 15000, suffix: "+", label: "Active Alumni", description: "Engaged members worldwide" },
@@ -113,7 +93,12 @@ export function StatsShowcase() {
                   className="text-4xl md:text-5xl font-display font-bold text-aurora mb-2 relative z-10"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                  <AnimatedCounter 
+                    value={stat.value} 
+                    suffix={stat.suffix} 
+                    delay={index * 0.15}
+                    duration={2.5}
+                  />
                 </motion.div>
                 
                 <div className="text-lg font-semibold text-foreground mb-1 relative z-10">
