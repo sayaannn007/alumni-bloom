@@ -713,6 +713,28 @@
   transform: translateY(0);
 }
 
+/* Scroll Snap Container */
+.scroll-snap-container {
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.scroll-snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* For sections that shouldn't snap */
+.scroll-snap-section > * {
+  min-height: auto;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -721,5 +743,10 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  
+  .scroll-snap-container {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
   }
 }

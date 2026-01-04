@@ -10,6 +10,9 @@ import { AlumniDirectory } from "@/components/AlumniDirectory";
 import { Footer } from "@/components/Footer";
 import { TimelineSection } from "@/components/TimelineSection";
 import { ParallaxBackground } from "@/components/effects/ParallaxBackground";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { KeyboardHints } from "@/components/KeyboardHints";
+import { useKeyboardNav } from "@/hooks/useKeyboardNav";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 const Index = () => {
@@ -20,31 +23,53 @@ const Index = () => {
     restDelta: 0.001,
   });
 
+  // Initialize keyboard navigation
+  useKeyboardNav();
+
   return (
-    <div className="min-h-screen overflow-x-hidden smooth-scroll relative">
-      {/* Parallax Background */}
-      <ParallaxBackground />
+    <>
+      <LoadingScreen />
+      <KeyboardHints />
       
-      {/* Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-[100] origin-left"
-        style={{ scaleX }}
-      />
-      
-      <Navigation />
-      <main className="relative z-10">
-        <HeroSection />
-        <DashboardCards />
-        <FeaturesSection />
-        <NetworkSection />
-        <TimelineSection />
-        <StatsShowcase />
-        <TestimonialsSection />
-        <AlumniDirectory />
-        <CTASection />
-      </main>
-      <Footer />
-    </div>
+      <div className="min-h-screen overflow-x-hidden relative scroll-snap-container">
+        {/* Parallax Background */}
+        <ParallaxBackground />
+        
+        {/* Scroll Progress Bar */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-[100] origin-left"
+          style={{ scaleX }}
+        />
+        
+        <Navigation />
+        <main className="relative z-10">
+          <section id="hero" className="scroll-snap-section">
+            <HeroSection />
+          </section>
+          <DashboardCards />
+          <section id="features" className="scroll-snap-section">
+            <FeaturesSection />
+          </section>
+          <section id="network" className="scroll-snap-section">
+            <NetworkSection />
+          </section>
+          <section id="timeline" className="scroll-snap-section">
+            <TimelineSection />
+          </section>
+          <section id="stats" className="scroll-snap-section">
+            <StatsShowcase />
+          </section>
+          <section id="testimonials" className="scroll-snap-section">
+            <TestimonialsSection />
+          </section>
+          <AlumniDirectory />
+          <section id="cta" className="scroll-snap-section">
+            <CTASection />
+          </section>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 
