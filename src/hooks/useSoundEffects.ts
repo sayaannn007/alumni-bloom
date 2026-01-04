@@ -2,6 +2,19 @@ import { useCallback, useRef } from "react";
 
 type SoundType = "click" | "hover" | "success" | "error" | "whoosh" | "pop";
 
+// Get settings from localStorage directly to avoid circular dependency
+const getSettings = () => {
+  try {
+    const stored = localStorage.getItem("alumniconnect-settings");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch {
+    // ignore
+  }
+  return { soundEnabled: true, soundVolume: 0.5 };
+};
+
 export const useSoundEffects = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
 
@@ -13,6 +26,9 @@ export const useSoundEffects = () => {
   }, []);
 
   const playSound = useCallback((type: SoundType) => {
+    const { soundEnabled, soundVolume } = getSettings();
+    if (!soundEnabled) return;
+
     try {
       const ctx = getAudioContext();
       const oscillator = ctx.createOscillator();
@@ -22,13 +38,14 @@ export const useSoundEffects = () => {
       gainNode.connect(ctx.destination);
 
       const now = ctx.currentTime;
+      const volume = soundVolume || 0.5;
 
       switch (type) {
         case "click":
           oscillator.type = "sine";
           oscillator.frequency.setValueAtTime(800, now);
           oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-          gainNode.gain.setValueAtTime(0.15, now);
+          gainNode.gain.setValueAtTime(0.15 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
           oscillator.start(now);
           oscillator.stop(now + 0.1);
@@ -38,7 +55,7 @@ export const useSoundEffects = () => {
           oscillator.type = "sine";
           oscillator.frequency.setValueAtTime(600, now);
           oscillator.frequency.exponentialRampToValueAtTime(800, now + 0.05);
-          gainNode.gain.setValueAtTime(0.05, now);
+          gainNode.gain.setValueAtTime(0.05 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
           oscillator.start(now);
           oscillator.stop(now + 0.05);
@@ -46,10 +63,10 @@ export const useSoundEffects = () => {
 
         case "success":
           oscillator.type = "sine";
-          oscillator.frequency.setValueAtTime(523, now); // C5
-          oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
-          oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
-          gainNode.gain.setValueAtTime(0.15, now);
+          oscillator.frequency.setValueAtTime(523, now);
+          oscillator.frequency.setValueAtTime(659, now + 0.1);
+          oscillator.frequency.setValueAtTime(784, now + 0.2);
+          gainNode.gain.setValueAtTime(0.15 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
           oscillator.start(now);
           oscillator.stop(now + 0.3);
@@ -59,7 +76,7 @@ export const useSoundEffects = () => {
           oscillator.type = "square";
           oscillator.frequency.setValueAtTime(200, now);
           oscillator.frequency.setValueAtTime(150, now + 0.1);
-          gainNode.gain.setValueAtTime(0.1, now);
+          gainNode.gain.setValueAtTime(0.1 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
           oscillator.start(now);
           oscillator.stop(now + 0.2);
@@ -69,7 +86,7 @@ export const useSoundEffects = () => {
           oscillator.type = "sawtooth";
           oscillator.frequency.setValueAtTime(100, now);
           oscillator.frequency.exponentialRampToValueAtTime(2000, now + 0.15);
-          gainNode.gain.setValueAtTime(0.08, now);
+          gainNode.gain.setValueAtTime(0.08 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
           oscillator.start(now);
           oscillator.stop(now + 0.15);
@@ -79,7 +96,7 @@ export const useSoundEffects = () => {
           oscillator.type = "sine";
           oscillator.frequency.setValueAtTime(1000, now);
           oscillator.frequency.exponentialRampToValueAtTime(200, now + 0.08);
-          gainNode.gain.setValueAtTime(0.2, now);
+          gainNode.gain.setValueAtTime(0.2 * volume, now);
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
           oscillator.start(now);
           oscillator.stop(now + 0.08);
