@@ -4,12 +4,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import { ThemeProvider } from "next-themes";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/transitions";
 import { CursorTrail } from "@/components/effects/CursorTrail";
 import { ClickExplosion } from "@/components/effects/ClickExplosion";
 import { FloatingNav } from "@/components/FloatingNav";
+import { SettingsPanel } from "@/components/SettingsPanel";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
@@ -84,20 +86,23 @@ function AnimatedRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <AuthProvider>
-        <TooltipProvider>
-          {/* Global cursor effects */}
-          <CursorTrail />
-          <ClickExplosion />
-          <FloatingNav />
-          
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AnimatedRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <SettingsProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            {/* Global cursor effects */}
+            <CursorTrail />
+            <ClickExplosion />
+            <FloatingNav />
+            <SettingsPanel />
+            
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AnimatedRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </SettingsProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

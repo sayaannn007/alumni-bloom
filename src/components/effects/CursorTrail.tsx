@@ -15,14 +15,40 @@ const trailColors = [
   "hsl(35 100% 50%)",  // orange
 ];
 
+// Get settings from localStorage directly
+const getSettings = () => {
+  try {
+    const stored = localStorage.getItem("alumniconnect-settings");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch {
+    // ignore
+  }
+  return { cursorTrailEnabled: true };
+};
+
 export function CursorTrail() {
   const [trail, setTrail] = useState<TrailPoint[]>([]);
-  const [isActive, setIsActive] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
   const idCounter = useRef(0);
   const lastPosition = useRef({ x: 0, y: 0 });
   const throttleTimer = useRef<number | null>(null);
 
+  // Check settings periodically
+  useEffect(() => {
+    const checkSettings = () => {
+      const { cursorTrailEnabled } = getSettings();
+      setIsEnabled(cursorTrailEnabled);
+    };
+    checkSettings();
+    const interval = setInterval(checkSettings, 500);
+    return () => clearInterval(interval);
+  }, []);
+
   const addPoint = useCallback((x: number, y: number) => {
+    if (!isEnabled) return;
+    
     const distance = Math.sqrt(
       Math.pow(x - lastPosition.current.x, 2) + 
       Math.pow(y - lastPosition.current.y, 2)
@@ -39,10 +65,13 @@ export function CursorTrail() {
     setTimeout(() => {
       setTrail((prev) => prev.filter((p) => p.id !== id));
     }, 600);
-  }, []);
+  }, [isEnabled]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      lastPosition.current = { x: e.clientX, y: e.clientY };
+      
+      if (!isEnabled) return;
       if (throttleTimer.current) return;
 
       throttleTimer.current = window.setTimeout(() => {
@@ -51,27 +80,22 @@ export function CursorTrail() {
       }, 16);
     };
 
-    const handleMouseEnter = () => setIsActive(true);
-    const handleMouseLeave = () => setIsActive(false);
-
     window.addEventListener("mousemove", handleMouseMove);
-    document.body.addEventListener("mouseenter", handleMouseEnter);
-    document.body.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      document.body.removeEventListener("mouseenter", handleMouseEnter);
-      document.body.removeEventListener("mouseleave", handleMouseLeave);
       if (throttleTimer.current) {
         clearTimeout(throttleTimer.current);
       }
     };
-  }, [addPoint]);
+  }, [addPoint, isEnabled]);
+
+  if (!isEnabled) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999]">
       <AnimatePresence>
-        {trail.map((point, index) => (
+        {trail.map((point) => (
           <motion.div
             key={point.id}
             className="absolute rounded-full"

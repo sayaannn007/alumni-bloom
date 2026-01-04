@@ -2,8 +2,23 @@ import { useCallback } from "react";
 
 type HapticType = "light" | "medium" | "heavy" | "success" | "warning" | "error";
 
+// Get settings from localStorage directly to avoid circular dependency
+const getSettings = () => {
+  try {
+    const stored = localStorage.getItem("alumniconnect-settings");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch {
+    // ignore
+  }
+  return { hapticEnabled: true };
+};
+
 export const useHaptics = () => {
   const vibrate = useCallback((type: HapticType) => {
+    const { hapticEnabled } = getSettings();
+    if (!hapticEnabled) return;
     if (!("vibrate" in navigator)) return;
 
     try {
