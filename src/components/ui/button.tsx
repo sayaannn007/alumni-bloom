@@ -2,6 +2,8 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { useHaptics } from "@/hooks/useHaptics";
 
 import { cn } from "@/lib/utils";
 
@@ -62,11 +64,14 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   ripple?: boolean;
+  sound?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ripple = true, onClick, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, ripple = true, sound = true, onClick, onMouseEnter, ...props }, ref) => {
     const [ripples, setRipples] = React.useState<RippleEffect[]>([]);
+    const { playSound } = useSoundEffects();
+    const { vibrate } = useHaptics();
     
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (ripple) {
@@ -82,7 +87,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         }, 800);
       }
       
+      if (sound) {
+        playSound("click");
+        vibrate("light");
+      }
+      
       onClick?.(e);
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (sound) {
+        playSound("hover");
+      }
+      onMouseEnter?.(e);
     };
     
     if (asChild) {
@@ -100,6 +117,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }), "relative overflow-hidden")}
         ref={ref}
         onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
         {...props}
       >
         {props.children}
