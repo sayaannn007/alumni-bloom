@@ -11,8 +11,7 @@ import { Footer } from "@/components/Footer";
 import { TimelineSection } from "@/components/TimelineSection";
 import { ParallaxBackground } from "@/components/effects/ParallaxBackground";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { KeyboardHints } from "@/components/KeyboardHints";
-import { useKeyboardNav } from "@/hooks/useKeyboardNav";
+import { OnboardingTutorial } from "@/components/OnboardingTutorial";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 const Index = () => {
@@ -23,13 +22,10 @@ const Index = () => {
     restDelta: 0.001,
   });
 
-  // Initialize keyboard navigation
-  useKeyboardNav();
-
   return (
     <>
       <LoadingScreen />
-      <KeyboardHints />
+      <OnboardingTutorial />
       
       <div className="min-h-screen overflow-x-hidden relative scroll-snap-container">
         {/* Parallax Background */}

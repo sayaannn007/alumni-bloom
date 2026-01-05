@@ -196,7 +196,7 @@ export function TimelineSection() {
             Our Journey
           </motion.span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="text-foreground">A Decade of </span>
+            <span className="text-foreground">Our Journey of </span>
             <span className="text-aurora">Connections</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

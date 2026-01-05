@@ -11,6 +11,10 @@ import {
   Layers,
   RotateCcw,
   SlidersHorizontal,
+  Bell,
+  Mail,
+  MessageSquare,
+  Users,
 } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Slider } from "@/components/ui/slider";
@@ -238,6 +242,73 @@ export const SettingsPanel = () => {
                       <Switch
                         checked={settings.scrollSnapEnabled}
                         onCheckedChange={(checked) => updateSetting("scrollSnapEnabled", checked)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="h-px bg-border/50" />
+
+                {/* Notification Settings */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-primary" />
+                    Notifications
+                  </h3>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Email notifications</span>
+                      </div>
+                      <Switch
+                        checked={settings.emailNotifications}
+                        onCheckedChange={(checked) => updateSetting("emailNotifications", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Bell className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Push notifications</span>
+                      </div>
+                      <Switch
+                        checked={settings.pushNotifications}
+                        onCheckedChange={(checked) => updateSetting("pushNotifications", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Message alerts</span>
+                      </div>
+                      <Switch
+                        checked={settings.messageNotifications}
+                        onCheckedChange={(checked) => updateSetting("messageNotifications", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Event reminders</span>
+                      </div>
+                      <Switch
+                        checked={settings.eventReminders}
+                        onCheckedChange={(checked) => updateSetting("eventReminders", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Connection requests</span>
+                      </div>
+                      <Switch
+                        checked={settings.connectionRequests}
+                        onCheckedChange={(checked) => updateSetting("connectionRequests", checked)}
                       />
                     </div>
                   </div>
