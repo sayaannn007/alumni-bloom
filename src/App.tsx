@@ -12,6 +12,7 @@ import { CursorTrail } from "@/components/effects/CursorTrail";
 import { ClickExplosion } from "@/components/effects/ClickExplosion";
 import { FloatingNav } from "@/components/FloatingNav";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { AchievementsBadge } from "@/components/AchievementsBadge";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
@@ -94,6 +95,7 @@ const App = () => (
             <ClickExplosion />
             <FloatingNav />
             <SettingsPanel />
+            <AchievementsBadge />
             
             <Toaster />
             <Sonner />
