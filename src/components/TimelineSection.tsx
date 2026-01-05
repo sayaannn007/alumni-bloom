@@ -84,13 +84,13 @@ function TimelineItem({ milestone, index, isLeft }: TimelineItemProps) {
     offset: ["start end", "center center"],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0.2, 1, 1]);
   const x = useTransform(
     scrollYProgress, 
     [0, 0.5, 1], 
-    [isLeft ? -100 : 100, isLeft ? -20 : 20, 0]
+    [isLeft ? -50 : 50, isLeft ? -10 : 10, 0]
   );
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 0.95, 1]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 1], [0.9, 1, 1]);
 
   return (
     <motion.div
@@ -159,7 +159,7 @@ export function TimelineSection() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section ref={containerRef} className="relative py-32 px-4 overflow-hidden">
+    <section ref={containerRef} className="relative py-32 px-4 overflow-visible">
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
