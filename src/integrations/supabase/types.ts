@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          badge_color: string
+          category: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number
+          requirement_count: number
+          requirement_type: string
+        }
+        Insert: {
+          badge_color?: string
+          category?: string
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number
+          requirement_count?: number
+          requirement_type: string
+        }
+        Update: {
+          badge_color?: string
+          category?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number
+          requirement_count?: number
+          requirement_type?: string
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -371,6 +410,45 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          profile_id: string
+          progress: number
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          profile_id: string
+          progress?: number
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          profile_id?: string
+          progress?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
