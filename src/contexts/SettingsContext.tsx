@@ -9,6 +9,12 @@ interface Settings {
   cursorTrailEnabled: boolean;
   parallaxEnabled: boolean;
   scrollSnapEnabled: boolean;
+  // Notification settings
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  messageNotifications: boolean;
+  eventReminders: boolean;
+  connectionRequests: boolean;
 }
 
 interface SettingsContextType {
@@ -26,6 +32,12 @@ const defaultSettings: Settings = {
   cursorTrailEnabled: true,
   parallaxEnabled: true,
   scrollSnapEnabled: true,
+  // Notification defaults
+  emailNotifications: true,
+  pushNotifications: true,
+  messageNotifications: true,
+  eventReminders: true,
+  connectionRequests: true,
 };
 
 const STORAGE_KEY = "alumniconnect-settings";
