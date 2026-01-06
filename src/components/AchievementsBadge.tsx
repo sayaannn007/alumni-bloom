@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, Users, Network, Calendar, CalendarCheck, 
   MessageCircle, MessageSquare, Briefcase, Building, 
-  Sparkles, Trophy, Lock
+  Sparkles, Trophy, Lock, Medal
 } from "lucide-react";
 import { GlassCard } from "@/components/GlassCard";
 import { useAchievements, Achievement, UserAchievement } from "@/hooks/useAchievements";
@@ -10,6 +10,8 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AchievementsLeaderboard } from "@/components/AchievementsLeaderboard";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   User,
@@ -160,36 +162,55 @@ export function AchievementsBadge() {
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="h-[60vh] pr-4">
-          <div className="space-y-8">
-            {Object.entries(categorizedAchievements).map(([category, categoryAchievements]) => (
-              <div key={category}>
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-secondary" />
-                  {categoryLabels[category] || category}
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <AnimatePresence>
-                    {categoryAchievements.map((achievement, index) => (
-                      <motion.div
-                        key={achievement.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <Badge
-                          achievement={achievement}
-                          earned={earnedIds.has(achievement.id)}
-                          progress={getProgressForAchievement(achievement.id)}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
+        <Tabs defaultValue="achievements" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="achievements" className="flex items-center gap-2">
+              <Trophy className="w-4 h-4" />
+              Badges
+            </TabsTrigger>
+            <TabsTrigger value="leaderboard" className="flex items-center gap-2">
+              <Medal className="w-4 h-4" />
+              Leaderboard
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="achievements">
+            <ScrollArea className="h-[55vh] pr-4">
+              <div className="space-y-8">
+                {Object.entries(categorizedAchievements).map(([category, categoryAchievements]) => (
+                  <div key={category}>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-secondary" />
+                      {categoryLabels[category] || category}
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <AnimatePresence>
+                        {categoryAchievements.map((achievement, index) => (
+                          <motion.div
+                            key={achievement.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
+                            <Badge
+                              achievement={achievement}
+                              earned={earnedIds.has(achievement.id)}
+                              progress={getProgressForAchievement(achievement.id)}
+                            />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="leaderboard">
+            <AchievementsLeaderboard />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
