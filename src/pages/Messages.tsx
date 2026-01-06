@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMessages } from "@/hooks/useMessages";
 import { usePresence } from "@/hooks/usePresence";
+import { useAchievements, Achievement } from "@/hooks/useAchievements";
 import { ConversationList } from "@/components/messaging/ConversationList";
 import { ChatWindow } from "@/components/messaging/ChatWindow";
 import { Navigation } from "@/components/Navigation";
@@ -10,15 +11,18 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, MessageSquare, ArrowLeft } from "lucide-react";
+import { AchievementToast } from "@/components/AchievementToast";
 
 export default function Messages() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedProfileId = searchParams.get("chat");
+  const [unlockedAchievement, setUnlockedAchievement] = useState<Achievement | null>(null);
   
   const { messages, conversations, loading, currentProfileId, sendMessage } = useMessages(selectedProfileId || undefined);
   const { isUserOnline, isUserTyping, sendTypingIndicator } = usePresence(currentProfileId);
+  const { checkAndAwardAchievement } = useAchievements();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -38,10 +42,20 @@ export default function Messages() {
     (c) => c.profile_id === selectedProfileId
   );
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = useCallback(async (content: string): Promise<boolean> => {
     if (!selectedProfileId) return false;
-    return await sendMessage(selectedProfileId, content);
-  };
+    const result = await sendMessage(selectedProfileId, content);
+    
+    if (result.success) {
+      // Check for messaging achievements
+      const newAchievement = await checkAndAwardAchievement("messages_sent", result.messageCount);
+      if (newAchievement) {
+        setUnlockedAchievement(newAchievement);
+      }
+      return true;
+    }
+    return false;
+  }, [selectedProfileId, sendMessage, checkAndAwardAchievement]);
 
   if (authLoading || loading) {
     return (
@@ -146,6 +160,11 @@ export default function Messages() {
       </main>
 
       <Footer />
+      
+      <AchievementToast
+        achievement={unlockedAchievement}
+        onClose={() => setUnlockedAchievement(null)}
+      />
     </div>
   );
 }

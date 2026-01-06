@@ -252,7 +252,7 @@ export function useMessages(selectedProfileId?: string) {
   }, [currentProfileId, selectedProfileId]);
 
   const sendMessage = async (recipientId: string, content: string) => {
-    if (!currentProfileId) return;
+    if (!currentProfileId) return { success: false, messageCount: 0 };
 
     const { error } = await supabase.from("messages").insert({
       sender_id: currentProfileId,
@@ -266,10 +266,16 @@ export function useMessages(selectedProfileId?: string) {
         description: "Failed to send message. Make sure you're connected with this user.",
         variant: "destructive",
       });
-      return false;
+      return { success: false, messageCount: 0 };
     }
 
-    return true;
+    // Get total message count for achievements
+    const { count } = await supabase
+      .from("messages")
+      .select("*", { count: "exact", head: true })
+      .eq("sender_id", currentProfileId);
+
+    return { success: true, messageCount: count || 1 };
   };
 
   return {
