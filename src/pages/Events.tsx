@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useAchievements, Achievement } from "@/hooks/useAchievements";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/GlassCard";
@@ -15,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, MapPin, Users, Clock, Plus, Video, Loader2 } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
+import { AchievementToast } from "@/components/AchievementToast";
 
 type Event = Tables<"events">;
 type EventRegistration = Tables<"event_registrations">;
@@ -23,12 +25,14 @@ export default function Events() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const { toast } = useToast();
+  const { checkAndAwardAchievement } = useAchievements();
   
   const [events, setEvents] = useState<Event[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [unlockedAchievement, setUnlockedAchievement] = useState<Achievement | null>(null);
 
   // New event form state
   const [newEvent, setNewEvent] = useState({
@@ -76,7 +80,7 @@ export default function Events() {
     return registrations.some(r => r.event_id === eventId && r.status === "registered");
   };
 
-  const handleRegister = async (eventId: string) => {
+  const handleRegister = useCallback(async (eventId: string) => {
     if (!profile) {
       toast({
         title: "Please log in",
@@ -93,6 +97,18 @@ export default function Events() {
 
       if (error) throw error;
 
+      // Get total registration count for achievements
+      const { count } = await supabase
+        .from("event_registrations")
+        .select("*", { count: "exact", head: true })
+        .eq("profile_id", profile.id);
+
+      // Check for event registration achievements
+      const newAchievement = await checkAndAwardAchievement("events_attended", (count || 0) + 1);
+      if (newAchievement) {
+        setUnlockedAchievement(newAchievement);
+      }
+
       toast({
         title: "Registered!",
         description: "You have successfully registered for this event.",
@@ -105,7 +121,7 @@ export default function Events() {
         variant: "destructive",
       });
     }
-  };
+  }, [profile, toast, checkAndAwardAchievement]);
 
   const handleCancelRegistration = async (eventId: string) => {
     if (!profile) return;
@@ -382,6 +398,11 @@ export default function Events() {
       </main>
 
       <Footer />
+      
+      <AchievementToast
+        achievement={unlockedAchievement}
+        onClose={() => setUnlockedAchievement(null)}
+      />
     </div>
   );
 }
