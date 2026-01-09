@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Trophy, UserPlus, Check, X, Sparkles } from "lucide-react";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useConnections } from "@/hooks/useConnections";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -14,27 +17,34 @@ interface Notification {
   description: string;
   timestamp: Date;
   data?: any;
+  isNew?: boolean;
 }
 
 export function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { user } = useAuth();
-  const { earnedAchievements, userAchievements } = useAchievements();
-  const { pendingRequests, acceptConnection, rejectConnection } = useConnections();
+  const { profile } = useProfile();
+  const { earnedAchievements, userAchievements, refetch: refetchAchievements } = useAchievements();
+  const { pendingRequests, acceptConnection, rejectConnection, refetch: refetchConnections } = useConnections();
+  const { playSound } = useSoundEffects();
+  const previousNotificationIds = useRef<Set<string>>(new Set());
 
-  useEffect(() => {
+  // Build notifications from current data
+  const buildNotifications = useCallback(() => {
     const newNotifications: Notification[] = [];
 
     // Add pending connection requests as notifications
     pendingRequests?.forEach((request) => {
+      const notifId = `connection-${request.id}`;
       newNotifications.push({
-        id: `connection-${request.id}`,
+        id: notifId,
         type: "connection_request",
         title: "New Connection Request",
         description: `${request.profile?.full_name || "Someone"} wants to connect with you`,
         timestamp: new Date(request.created_at),
         data: request,
+        isNew: !previousNotificationIds.current.has(notifId),
       });
     });
 
@@ -43,26 +53,110 @@ export function NotificationDropdown() {
     earnedAchievements?.forEach((userAchievement) => {
       const earnedAt = userAchievement.earned_at;
       if (earnedAt && new Date(earnedAt) > oneDayAgo && userAchievement.achievement) {
+        const notifId = `achievement-${userAchievement.achievement_id}`;
         newNotifications.push({
-          id: `achievement-${userAchievement.achievement_id}`,
+          id: notifId,
           type: "achievement",
           title: "Achievement Unlocked!",
           description: userAchievement.achievement.name,
           timestamp: new Date(earnedAt),
           data: userAchievement.achievement,
+          isNew: !previousNotificationIds.current.has(notifId),
         });
       }
     });
 
     // Sort by timestamp (newest first)
     newNotifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    setNotifications(newNotifications);
-  }, [pendingRequests, earnedAchievements, userAchievements]);
+    
+    return newNotifications;
+  }, [pendingRequests, earnedAchievements]);
+
+  // Update notifications and play sound for new ones
+  useEffect(() => {
+    const newNotifications = buildNotifications();
+    
+    // Check for truly new notifications (not in previous set)
+    const hasNewNotification = newNotifications.some(n => n.isNew);
+    
+    if (hasNewNotification && previousNotificationIds.current.size > 0) {
+      // Check if it's an achievement or connection
+      const newAchievement = newNotifications.find(n => n.isNew && n.type === "achievement");
+      const newConnection = newNotifications.find(n => n.isNew && n.type === "connection_request");
+      
+      if (newAchievement) {
+        playSound("achievement");
+      } else if (newConnection) {
+        playSound("notification");
+      }
+    }
+
+    // Update the previous IDs set
+    previousNotificationIds.current = new Set(newNotifications.map(n => n.id));
+    
+    // Clear isNew flag after setting
+    setNotifications(newNotifications.map(n => ({ ...n, isNew: false })));
+  }, [buildNotifications, playSound]);
+
+  // Real-time subscription for connections
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const channel = supabase
+      .channel('notifications-connections')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'connections',
+          filter: `recipient_id=eq.${profile.id}`,
+        },
+        (payload) => {
+          console.log('Connection change:', payload);
+          // Refetch connections to update notifications
+          refetchConnections();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id, refetchConnections]);
+
+  // Real-time subscription for achievements
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const channel = supabase
+      .channel('notifications-achievements')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_achievements',
+          filter: `profile_id=eq.${profile.id}`,
+        },
+        (payload) => {
+          console.log('New achievement:', payload);
+          // Refetch achievements to update notifications
+          refetchAchievements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id, refetchAchievements]);
 
   const unreadCount = notifications.length;
 
   const handleAcceptConnection = async (connectionId: string) => {
     await acceptConnection(connectionId);
+    playSound("success");
     setNotifications((prev) =>
       prev.filter((n) => n.id !== `connection-${connectionId}`)
     );
@@ -75,6 +169,13 @@ export function NotificationDropdown() {
     );
   };
 
+  const handleBellClick = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      playSound("click");
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -82,7 +183,7 @@ export function NotificationDropdown() {
       {/* Bell Button */}
       <motion.button
         className="relative w-10 h-10 rounded-full glass flex items-center justify-center hover:glass-glow transition-all duration-300"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleBellClick}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -152,9 +253,13 @@ export function NotificationDropdown() {
                     Notifications
                   </h3>
                   {unreadCount > 0 && (
-                    <span className="text-xs text-muted-foreground">
+                    <motion.span 
+                      className="text-xs text-muted-foreground"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
                       {unreadCount} new
-                    </span>
+                    </motion.span>
                   )}
                 </div>
               </div>
@@ -180,19 +285,22 @@ export function NotificationDropdown() {
                       >
                         <div className="flex items-start gap-3">
                           {/* Icon */}
-                          <div
+                          <motion.div
                             className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                               notification.type === "achievement"
                                 ? "bg-gradient-to-br from-amber-400/20 to-orange-500/20"
                                 : "bg-gradient-to-br from-primary/20 to-secondary/20"
                             }`}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: index * 0.05 + 0.1, type: "spring" }}
                           >
                             {notification.type === "achievement" ? (
                               <Trophy className="w-4 h-4 text-amber-400" />
                             ) : (
                               <UserPlus className="w-4 h-4 text-primary" />
                             )}
-                          </div>
+                          </motion.div>
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
@@ -232,11 +340,16 @@ export function NotificationDropdown() {
 
                             {/* Achievement Badge */}
                             {notification.type === "achievement" && (
-                              <div className="flex items-center gap-1 mt-1">
+                              <motion.div 
+                                className="flex items-center gap-1 mt-1"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: index * 0.05 + 0.2 }}
+                              >
                                 <span className="text-xs text-amber-400">
                                   +{notification.data.points} points
                                 </span>
-                              </div>
+                              </motion.div>
                             )}
                           </div>
                         </div>

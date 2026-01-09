@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 
-type SoundType = "click" | "hover" | "success" | "error" | "whoosh" | "pop";
+type SoundType = "click" | "hover" | "success" | "error" | "whoosh" | "pop" | "notification" | "achievement";
 
 // Get settings from localStorage directly to avoid circular dependency
 const getSettings = () => {
@@ -100,6 +100,34 @@ export const useSoundEffects = () => {
           gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
           oscillator.start(now);
           oscillator.stop(now + 0.08);
+          break;
+
+        case "notification":
+          // Pleasant two-tone chime for notifications
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(880, now); // A5
+          oscillator.frequency.setValueAtTime(1174.66, now + 0.15); // D6
+          gainNode.gain.setValueAtTime(0.2 * volume, now);
+          gainNode.gain.setValueAtTime(0.15 * volume, now + 0.15);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          oscillator.start(now);
+          oscillator.stop(now + 0.4);
+          break;
+
+        case "achievement":
+          // Triumphant fanfare for achievements
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(523.25, now); // C5
+          oscillator.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          oscillator.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          oscillator.frequency.setValueAtTime(1046.5, now + 0.3); // C6
+          gainNode.gain.setValueAtTime(0.2 * volume, now);
+          gainNode.gain.setValueAtTime(0.18 * volume, now + 0.1);
+          gainNode.gain.setValueAtTime(0.15 * volume, now + 0.2);
+          gainNode.gain.setValueAtTime(0.2 * volume, now + 0.3);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          oscillator.start(now);
+          oscillator.stop(now + 0.5);
           break;
       }
     } catch (e) {
