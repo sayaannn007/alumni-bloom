@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { User, Briefcase, MapPin, GraduationCap, Shield, Linkedin, Phone, Mail, Loader2, Save, LogOut } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 import { ProfileSuggestions } from "@/components/ProfileSuggestions";
+import { ProfileCompletionCard } from "@/components/ProfileCompletionCard";
 
 type PrivacyLevel = Database["public"]["Enums"]["privacy_level"];
 
@@ -148,7 +149,8 @@ export default function Profile() {
             </Button>
           </div>
 
-          <div className="mb-6">
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <ProfileCompletionCard />
             <ProfileSuggestions profile={profile} />
           </div>
 
