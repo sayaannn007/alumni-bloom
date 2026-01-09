@@ -11,6 +11,7 @@ import {
   Home,
   Sparkles
 } from "lucide-react";
+import { NotificationDropdown } from "./NotificationDropdown";
 
 const navItems = [
   { icon: Home, label: "Home", href: "#" },
@@ -91,6 +92,9 @@ export function FloatingNav() {
 
           {/* Main FAB Row */}
           <div className="flex items-center gap-3">
+            {/* Notification Dropdown */}
+            <NotificationDropdown />
+
             {/* Scroll to Top */}
             <motion.button
               className="w-12 h-12 rounded-full glass flex items-center justify-center hover:glass-glow transition-all duration-300"
