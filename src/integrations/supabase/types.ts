@@ -402,6 +402,7 @@ export type Database = {
           linkedin_url: string | null
           location: string | null
           location_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences: Json | null
           phone: string | null
           phone_privacy: Database["public"]["Enums"]["privacy_level"] | null
           profile_privacy: Database["public"]["Enums"]["privacy_level"] | null
@@ -423,6 +424,7 @@ export type Database = {
           linkedin_url?: string | null
           location?: string | null
           location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences?: Json | null
           phone?: string | null
           phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
           profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null
@@ -444,6 +446,7 @@ export type Database = {
           linkedin_url?: string | null
           location?: string | null
           location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences?: Json | null
           phone?: string | null
           phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
           profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null

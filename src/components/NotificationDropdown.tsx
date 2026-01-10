@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Trophy, UserPlus, Check, X, Sparkles, CheckCheck, Trash2 } from "lucide-react";
+import { Bell, Trophy, UserPlus, Check, X, Sparkles, CheckCheck, Trash2, ExternalLink } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useConnections } from "@/hooks/useConnections";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format, formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 
 export function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -303,16 +304,16 @@ export function NotificationDropdown() {
               </ScrollArea>
 
               {/* Footer */}
-              {combinedNotifications.length > 0 && (
-                <div className="px-4 py-2 border-t border-white/10 bg-muted/30">
-                  <button
-                    className="text-xs text-primary hover:text-primary/80 transition-colors w-full text-center"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
+              <div className="px-4 py-2 border-t border-white/10 bg-muted/30">
+                <Link
+                  to="/notifications"
+                  className="text-xs text-primary hover:text-primary/80 transition-colors w-full text-center flex items-center justify-center gap-1"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  View all notifications
+                </Link>
+              </div>
             </motion.div>
           </>
         )}
