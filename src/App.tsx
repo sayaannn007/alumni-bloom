@@ -19,6 +19,7 @@ import Profile from "./pages/Profile";
 import Events from "./pages/Events";
 import Jobs from "./pages/Jobs";
 import Messages from "./pages/Messages";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ function AnimatedRoutes() {
       "/events": "slide",
       "/jobs": "fade",
       "/messages": "liquid",
+      "/notifications": "scale",
     };
     return routes[location.pathname] || "liquid";
   };
@@ -72,6 +74,11 @@ function AnimatedRoutes() {
         <Route path="/messages" element={
           <PageTransition variant="liquid">
             <Messages />
+          </PageTransition>
+        } />
+        <Route path="/notifications" element={
+          <PageTransition variant="scale">
+            <Notifications />
           </PageTransition>
         } />
         <Route path="*" element={
