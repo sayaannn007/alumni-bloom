@@ -15,17 +15,20 @@ import {
   Mail,
   MessageSquare,
   Users,
+  Loader2,
 } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { useInteractionFeedback } from "@/hooks/useInteractionFeedback";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 export const SettingsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { settings, updateSetting, resetSettings } = useSettings();
   const { trigger } = useInteractionFeedback();
+  const { isSupported, isSubscribed, isLoading: pushLoading, toggle: togglePush, permission } = usePushNotifications();
 
   const togglePanel = () => {
     trigger("toggle");
@@ -270,12 +273,25 @@ export const SettingsPanel = () => {
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Bell className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Push notifications</span>
+                        {pushLoading ? (
+                          <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
+                        ) : (
+                          <Bell className="w-4 h-4 text-muted-foreground" />
+                        )}
+                        <div className="flex flex-col">
+                          <span className="text-sm text-muted-foreground">Push notifications</span>
+                          {!isSupported && (
+                            <span className="text-xs text-muted-foreground/60">Not supported in this browser</span>
+                          )}
+                          {isSupported && permission === "denied" && (
+                            <span className="text-xs text-destructive">Blocked by browser</span>
+                          )}
+                        </div>
                       </div>
                       <Switch
-                        checked={settings.pushNotifications}
-                        onCheckedChange={(checked) => updateSetting("pushNotifications", checked)}
+                        checked={isSubscribed}
+                        onCheckedChange={togglePush}
+                        disabled={!isSupported || pushLoading || permission === "denied"}
                       />
                     </div>
 
