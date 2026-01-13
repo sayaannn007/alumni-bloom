@@ -10,6 +10,7 @@ import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/transitions";
 import { CursorTrail } from "@/components/effects/CursorTrail";
 import { ClickExplosion } from "@/components/effects/ClickExplosion";
+import { ThemeTransitionProvider } from "@/components/effects/ThemeTransition";
 import { FloatingNav } from "@/components/FloatingNav";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { AchievementsBadge } from "@/components/AchievementsBadge";
@@ -94,24 +95,26 @@ function AnimatedRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <SettingsProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            {/* Global cursor effects */}
-            <CursorTrail />
-            <ClickExplosion />
-            <FloatingNav />
-            <SettingsPanel />
-            <AchievementsBadge />
-            
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AnimatedRoutes />
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </SettingsProvider>
+      <ThemeTransitionProvider>
+        <SettingsProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              {/* Global cursor effects */}
+              <CursorTrail />
+              <ClickExplosion />
+              <FloatingNav />
+              <SettingsPanel />
+              <AchievementsBadge />
+              
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AnimatedRoutes />
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </SettingsProvider>
+      </ThemeTransitionProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
