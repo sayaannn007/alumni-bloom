@@ -10,7 +10,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, MessageSquare, ArrowLeft } from "lucide-react";
+import { MessageSquare, ArrowLeft } from "lucide-react";
 import { AchievementToast } from "@/components/AchievementToast";
 
 export default function Messages() {
@@ -57,13 +57,49 @@ export default function Messages() {
     return false;
   }, [selectedProfileId, sendMessage, checkAndAwardAchievement]);
 
-  if (authLoading || loading) {
+  if (authLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navigation />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+        <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+          <div className="flex items-center gap-3 mb-6">
+            <MessageSquare className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold">Messages</h1>
+          </div>
+          <Card className="h-[calc(100vh-280px)] min-h-[500px] overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 h-full">
+              <div className="border-r border-border md:col-span-1 h-full">
+                <div className="p-4 border-b border-border">
+                  <h2 className="font-semibold">Conversations</h2>
+                </div>
+                <div className="h-[calc(100%-57px)]">
+                  <ConversationList
+                    conversations={[]}
+                    selectedId={null}
+                    onSelect={() => {}}
+                    isUserOnline={() => false}
+                    isUserTyping={() => false}
+                    loading={true}
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-2 h-full hidden md:block">
+                <ChatWindow
+                  messages={[]}
+                  currentProfileId={null}
+                  recipientId={null}
+                  recipientName={null}
+                  recipientAvatar={null}
+                  isOnline={false}
+                  isTyping={false}
+                  onSendMessage={async () => false}
+                  onTyping={() => {}}
+                  loading={true}
+                />
+              </div>
+            </div>
+          </Card>
+        </main>
         <Footer />
       </div>
     );
@@ -93,6 +129,7 @@ export default function Messages() {
                   onSelect={handleSelectConversation}
                   isUserOnline={isUserOnline}
                   isUserTyping={isUserTyping}
+                  loading={loading}
                 />
               </div>
             </div>
@@ -110,6 +147,7 @@ export default function Messages() {
                     onSelect={handleSelectConversation}
                     isUserOnline={isUserOnline}
                     isUserTyping={isUserTyping}
+                    loading={loading}
                   />
                 </div>
               </div>
