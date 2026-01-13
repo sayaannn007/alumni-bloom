@@ -5,7 +5,7 @@ import { GlassCard } from "@/components/GlassCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton, SkeletonLeaderboardItem } from "@/components/ui/skeleton";
 
 interface LeaderboardEntry {
   profile_id: string;
@@ -134,12 +134,15 @@ export function AchievementsLeaderboard() {
     return (
       <GlassCard className="p-6">
         <div className="flex items-center gap-3 mb-6">
-          <Trophy className="w-6 h-6 text-primary" />
-          <h3 className="text-xl font-display font-bold">Leaderboard</h3>
+          <Skeleton variant="circular" className="w-10 h-10" />
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-3 w-40" />
+          </div>
         </div>
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-xl" />
+            <SkeletonLeaderboardItem key={i} style={{ animationDelay: `${i * 100}ms` }} />
           ))}
         </div>
       </GlassCard>
