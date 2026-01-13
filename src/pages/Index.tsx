@@ -12,15 +12,9 @@ import { TimelineSection } from "@/components/TimelineSection";
 import { ParallaxBackground } from "@/components/effects/ParallaxBackground";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { OnboardingTutorial } from "@/components/OnboardingTutorial";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 
 const Index = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
 
   return (
     <>
@@ -31,11 +25,8 @@ const Index = () => {
         {/* Parallax Background */}
         <ParallaxBackground />
         
-        {/* Scroll Progress Bar */}
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-[100] origin-left"
-          style={{ scaleX }}
-        />
+        {/* Aurora Scroll Progress Bar */}
+        <ScrollProgress variant="aurora" height={3} />
         
         <Navigation />
         <main className="relative z-10">
