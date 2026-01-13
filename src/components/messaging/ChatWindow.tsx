@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Send, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,38 @@ interface ChatWindowProps {
   isTyping: boolean;
   onSendMessage: (content: string) => Promise<boolean>;
   onTyping: (recipientId: string, isTyping: boolean) => void;
+  loading?: boolean;
+}
+
+function MessageSkeleton({ isOwn = false }: { isOwn?: boolean }) {
+  return (
+    <div className={cn("flex", isOwn ? "justify-end" : "justify-start")}>
+      <div className="space-y-2">
+        <Skeleton 
+          className={cn(
+            "rounded-2xl",
+            isOwn ? "rounded-br-md w-48 h-14" : "rounded-bl-md w-56 h-16"
+          )} 
+        />
+        <Skeleton className={cn("h-3 w-14", isOwn && "ml-auto")} />
+      </div>
+    </div>
+  );
+}
+
+function ChatHeaderSkeleton() {
+  return (
+    <div className="flex items-center gap-3 p-4 border-b border-border">
+      <div className="relative">
+        <Skeleton variant="circular" className="h-10 w-10" />
+        <Skeleton variant="circular" className="absolute bottom-0 right-0 h-3 w-3" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </div>
+  );
 }
 
 export function ChatWindow({
@@ -30,6 +63,7 @@ export function ChatWindow({
   isTyping,
   onSendMessage,
   onTyping,
+  loading = false,
 }: ChatWindowProps) {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -106,6 +140,27 @@ export function ChatWindow({
       }
     };
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col h-full">
+        <ChatHeaderSkeleton />
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4">
+            {[...Array(8)].map((_, i) => (
+              <MessageSkeleton key={i} isOwn={i % 3 === 0} />
+            ))}
+          </div>
+        </ScrollArea>
+        <div className="p-4 border-t border-border">
+          <div className="flex gap-2">
+            <Skeleton className="flex-1 h-10 rounded-md" />
+            <Skeleton className="h-10 w-10 rounded-md" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!recipientName) {
     return (

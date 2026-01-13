@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@/hooks/useMessages";
@@ -11,6 +12,25 @@ interface ConversationListProps {
   onSelect: (profileId: string) => void;
   isUserOnline: (profileId: string) => boolean;
   isUserTyping: (profileId: string) => boolean;
+  loading?: boolean;
+}
+
+function ConversationSkeleton() {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-lg">
+      <div className="relative">
+        <Skeleton variant="circular" className="h-12 w-12" />
+        <Skeleton variant="circular" className="absolute bottom-0 right-0 h-3.5 w-3.5" />
+      </div>
+      <div className="flex-1 min-w-0 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+        <Skeleton className="h-3.5 w-full" />
+      </div>
+    </div>
+  );
 }
 
 export function ConversationList({ 
@@ -19,7 +39,20 @@ export function ConversationList({
   onSelect,
   isUserOnline,
   isUserTyping,
+  loading = false,
 }: ConversationListProps) {
+  if (loading) {
+    return (
+      <ScrollArea className="h-full">
+        <div className="space-y-1 p-2">
+          {[...Array(6)].map((_, i) => (
+            <ConversationSkeleton key={i} />
+          ))}
+        </div>
+      </ScrollArea>
+    );
+  }
+
   if (conversations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center">
