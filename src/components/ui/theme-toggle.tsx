@@ -1,14 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, MouseEvent } from "react";
 import { useInteractionFeedback } from "@/hooks/useInteractionFeedback";
+import { useThemeTransition } from "@/components/effects/ThemeTransition";
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const { trigger } = useInteractionFeedback();
+  const { triggerTransition } = useThemeTransition();
 
   useEffect(() => {
     setMounted(true);
@@ -22,13 +24,19 @@ export function ThemeToggle() {
 
   const isDark = resolvedTheme === "dark";
 
-  const toggleTheme = () => {
+  const toggleTheme = (e: MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    
     trigger("toggle");
+    triggerTransition(x, y);
     setIsAnimating(true);
+    
     setTimeout(() => {
       setTheme(isDark ? "light" : "dark");
       setTimeout(() => setIsAnimating(false), 500);
-    }, 150);
+    }, 100);
   };
 
   return (
