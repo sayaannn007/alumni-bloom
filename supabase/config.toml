@@ -1,4 +1,4 @@
 project_id = "rsszoxqqechqaxcorllq"
 
 [functions.profile-suggestions]
-verify_jwt = true
+verify_jwt = false
