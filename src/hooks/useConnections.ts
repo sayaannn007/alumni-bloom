@@ -49,8 +49,9 @@ export function useConnections() {
     ) || [];
 
     if (profileIds.length > 0) {
+      // Use secure view for field-level privacy enforcement
       const { data: profiles } = await supabase
-        .from("profiles")
+        .from("profiles_secure")
         .select("id, full_name, avatar_url, job_title, company")
         .in("id", profileIds);
 
@@ -75,8 +76,9 @@ export function useConnections() {
 
     if (pendingData && pendingData.length > 0) {
       const requesterIds = pendingData.map((c) => c.requester_id);
+      // Use secure view for field-level privacy enforcement
       const { data: requesterProfiles } = await supabase
-        .from("profiles")
+        .from("profiles_secure")
         .select("id, full_name, avatar_url, job_title, company")
         .in("id", requesterIds);
 

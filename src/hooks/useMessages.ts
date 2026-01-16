@@ -105,8 +105,9 @@ export function useMessages(selectedProfileId?: string) {
         return;
       }
 
+      // Use secure view for field-level privacy enforcement
       const { data: profiles } = await supabase
-        .from("profiles")
+        .from("profiles_secure")
         .select("id, full_name, avatar_url")
         .in("id", partnerIds);
 
