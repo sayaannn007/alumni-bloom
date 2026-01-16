@@ -59,14 +59,16 @@ export default function Jobs() {
 
   async function fetchJobs() {
     try {
+      // Use the jobs_public view which excludes contact_email for security
       const { data, error } = await supabase
-        .from("jobs")
+        .from("jobs_public")
         .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setJobs(data || []);
+      // Map view data to Job type (contact_email will be undefined)
+      setJobs((data || []).map(job => ({ ...job, contact_email: null })) as Job[]);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     } finally {
@@ -387,13 +389,7 @@ export default function Jobs() {
                           </a>
                         </Button>
                       )}
-                      {job.contact_email && !job.application_url && (
-                        <Button variant="aurora" size="sm" asChild>
-                          <a href={`mailto:${job.contact_email}`}>
-                            Contact
-                          </a>
-                        </Button>
-                      )}
+                      {/* contact_email is no longer exposed in the public view for security */}
                     </div>
                   </div>
                 </GlassCard>

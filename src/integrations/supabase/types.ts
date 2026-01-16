@@ -239,6 +239,13 @@ export type Database = {
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       jobs: {
@@ -549,7 +556,65 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      jobs_public: {
+        Row: {
+          application_url: string | null
+          company: string | null
+          created_at: string | null
+          description: string | null
+          expires_at: string | null
+          id: string | null
+          is_active: boolean | null
+          job_type: string | null
+          location: string | null
+          posted_by: string | null
+          requirements: string | null
+          salary_range: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_url?: string | null
+          company?: string | null
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_url?: string | null
+          company?: string | null
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          salary_range?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       are_connected: {
