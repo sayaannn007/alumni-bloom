@@ -257,6 +257,72 @@ function SkeletonJobsList({ count = 5, className, ...props }: React.HTMLAttribut
   );
 }
 
+function SkeletonProfilePage({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("space-y-6", className)} {...props}>
+      {/* Header skeleton */}
+      <div className="flex items-center gap-4 pb-8 border-b border-border/50">
+        <Skeleton className="w-20 h-20 rounded-2xl" />
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </div>
+      
+      {/* Tabs skeleton */}
+      <div className="flex gap-2 mb-8">
+        <Skeleton className="h-10 flex-1 rounded-lg" />
+        <Skeleton className="h-10 flex-1 rounded-lg" />
+        <Skeleton className="h-10 flex-1 rounded-lg" />
+      </div>
+      
+      {/* Form fields skeleton */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="space-y-2" style={{ animationDelay: `${i * 50}ms` }}>
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full rounded-lg" />
+          </div>
+        ))}
+      </div>
+      
+      {/* Bio skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-24 w-full rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
+function SkeletonCompletionCard({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("p-4 rounded-xl bg-card/50 border border-border/50", className)} {...props}>
+      <div className="flex items-start gap-3 mb-3">
+        <Skeleton variant="circular" className="w-10 h-10" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-3 w-48" />
+        </div>
+      </div>
+      <div className="mb-3 space-y-1">
+        <div className="flex justify-between">
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-3 w-8" />
+        </div>
+        <Skeleton className="h-2 w-full rounded-full" />
+      </div>
+      <div className="flex flex-wrap gap-1 mb-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-5 w-16 rounded-full" />
+        ))}
+      </div>
+      <Skeleton variant="button" className="w-full h-9" />
+    </div>
+  );
+}
+
 export { 
   Skeleton, 
   SkeletonCard, 
@@ -272,4 +338,6 @@ export {
   SkeletonJobCard,
   SkeletonEventsGrid,
   SkeletonJobsList,
+  SkeletonProfilePage,
+  SkeletonCompletionCard,
 };
