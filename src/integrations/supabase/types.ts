@@ -629,6 +629,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      register_for_event: {
+        Args: { event_id_param: string; profile_id_param: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

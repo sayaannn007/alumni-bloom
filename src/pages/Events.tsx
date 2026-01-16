@@ -92,11 +92,33 @@ export default function Events() {
     }
 
     try {
+      // Use secure database function with capacity validation
       const { error } = await supabase
-        .from("event_registrations")
-        .insert({ event_id: eventId, profile_id: profile.id });
+        .rpc("register_for_event", { 
+          event_id_param: eventId, 
+          profile_id_param: profile.id 
+        });
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific error messages from the function
+        if (error.message.includes("full capacity")) {
+          toast({
+            title: "Event Full",
+            description: "This event has reached maximum capacity.",
+            variant: "destructive",
+          });
+          return;
+        }
+        if (error.message.includes("Already registered")) {
+          toast({
+            title: "Already Registered",
+            description: "You are already registered for this event.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
 
       // Get total registration count for achievements
       const { count } = await supabase
