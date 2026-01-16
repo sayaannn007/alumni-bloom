@@ -87,10 +87,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "connections_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "connections_requester_id_fkey"
             columns: ["requester_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "connections_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -130,6 +144,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -191,6 +212,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
         ]
       }
       job_applications: {
@@ -230,6 +258,13 @@ export type Database = {
             columns: ["applicant_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_applications_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
           {
@@ -308,6 +343,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "jobs_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
         ]
       }
       messages: {
@@ -344,10 +386,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -389,6 +445,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -495,6 +558,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "push_subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_achievements: {
@@ -532,6 +602,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -613,7 +690,83 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "jobs_posted_by_fkey"
+            columns: ["posted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles_secure"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      profiles_secure: {
+        Row: {
+          avatar_url: string | null
+          batch_year: number | null
+          bio: string | null
+          company: string | null
+          created_at: string | null
+          email: string | null
+          email_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          full_name: string | null
+          id: string | null
+          industry: string | null
+          job_title: string | null
+          linkedin_url: string | null
+          location: string | null
+          location_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences: Json | null
+          phone: string | null
+          phone_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          batch_year?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          email?: never
+          email_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          full_name?: string | null
+          id?: string | null
+          industry?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: never
+          location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences?: Json | null
+          phone?: never
+          phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          batch_year?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          email?: never
+          email_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          full_name?: string | null
+          id?: string | null
+          industry?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: never
+          location_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          notification_preferences?: Json | null
+          phone?: never
+          phone_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          profile_privacy?: Database["public"]["Enums"]["privacy_level"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
