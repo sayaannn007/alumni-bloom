@@ -17,6 +17,7 @@ import { User, Briefcase, MapPin, GraduationCap, Shield, Linkedin, Phone, Mail, 
 import { Database } from "@/integrations/supabase/types";
 import { ProfileSuggestions } from "@/components/ProfileSuggestions";
 import { ProfileCompletionCard } from "@/components/ProfileCompletionCard";
+import { SkeletonProfilePage, SkeletonCompletionCard } from "@/components/ui/skeleton";
 
 type PrivacyLevel = Database["public"]["Enums"]["privacy_level"];
 
@@ -119,8 +120,28 @@ export default function Profile() {
 
   if (authLoading || profileLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-aurora" />
+      <div className="min-h-screen overflow-x-hidden">
+        <Navigation />
+        <main className="pt-32 pb-20 px-4 relative">
+          <LiquidBlob color="cyan" size="xl" className="top-20 -left-40 opacity-30" />
+          <LiquidBlob color="purple" size="lg" className="bottom-40 -right-40 opacity-30" delay />
+          <div className="max-w-4xl mx-auto relative z-10">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+              <div className="space-y-2">
+                <div className="h-10 w-48 bg-muted/50 rounded-lg skeleton-shimmer" />
+                <div className="h-5 w-64 bg-muted/30 rounded skeleton-shimmer" />
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <SkeletonCompletionCard />
+              <SkeletonCompletionCard />
+            </div>
+            <GlassCard glow className="p-6">
+              <SkeletonProfilePage />
+            </GlassCard>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }

@@ -1,12 +1,12 @@
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ReactNode } from "react";
 
 interface PageTransitionProps {
   children: ReactNode;
-  variant?: "fade" | "slide" | "scale" | "morph" | "liquid";
+  variant?: "fade" | "slide" | "scale" | "morph" | "liquid" | "blur" | "flip";
 }
 
-const variants = {
+const variants: Record<string, Variants> = {
   fade: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
@@ -62,10 +62,44 @@ const variants = {
       transformPerspective: 1200,
     },
   },
+  blur: {
+    initial: { 
+      opacity: 0,
+      filter: "blur(40px) saturate(0.5)",
+      scale: 1.1,
+    },
+    animate: { 
+      opacity: 1,
+      filter: "blur(0px) saturate(1)",
+      scale: 1,
+    },
+    exit: { 
+      opacity: 0,
+      filter: "blur(40px) saturate(0.5)",
+      scale: 0.9,
+    },
+  },
+  flip: {
+    initial: { 
+      opacity: 0,
+      rotateY: 90,
+      transformPerspective: 1200,
+    },
+    animate: { 
+      opacity: 1,
+      rotateY: 0,
+      transformPerspective: 1200,
+    },
+    exit: { 
+      opacity: 0,
+      rotateY: -90,
+      transformPerspective: 1200,
+    },
+  },
 };
 
 const transition = {
-  duration: 0.5,
+  duration: 0.6,
   ease: [0.22, 1, 0.36, 1],
 };
 
@@ -78,6 +112,7 @@ export function PageTransition({ children, variant = "liquid" }: PageTransitionP
       variants={variants[variant]}
       transition={transition}
       className="w-full min-h-screen"
+      style={{ transformStyle: "preserve-3d" }}
     >
       {children}
     </motion.div>
