@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, MapPin, Users, Clock, Plus, Video, Loader2 } from "lucide-react";
+import { SkeletonEventsGrid } from "@/components/ui/skeleton";
 import { Tables } from "@/integrations/supabase/types";
 import { AchievementToast } from "@/components/AchievementToast";
 
@@ -313,9 +314,7 @@ export default function Events() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-aurora" />
-            </div>
+            <SkeletonEventsGrid count={4} />
           ) : events.length === 0 ? (
             <GlassCard className="text-center py-16">
               <Calendar className="w-16 h-16 mx-auto text-muted-foreground mb-4" />

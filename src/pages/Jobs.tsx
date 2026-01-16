@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, MapPin, Building, Clock, Plus, ExternalLink, Loader2, Search, DollarSign } from "lucide-react";
+import { SkeletonJobsList } from "@/components/ui/skeleton";
 import { Tables, Database } from "@/integrations/supabase/types";
 
 type Job = Tables<"jobs">;
@@ -311,9 +312,7 @@ export default function Jobs() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-aurora" />
-            </div>
+            <SkeletonJobsList count={5} />
           ) : filteredJobs.length === 0 ? (
             <GlassCard className="text-center py-16">
               <Briefcase className="w-16 h-16 mx-auto text-muted-foreground mb-4" />

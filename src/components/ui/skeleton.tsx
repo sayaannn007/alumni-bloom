@@ -173,6 +173,90 @@ function SkeletonConversation({ count = 5, className, ...props }: React.HTMLAttr
   );
 }
 
+function SkeletonEventCard({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("p-6 rounded-xl bg-card/50 border border-border/50 space-y-4 flex flex-col", className)} {...props}>
+      <div className="flex items-start justify-between">
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-5 w-24 rounded-full" />
+        </div>
+      </div>
+      <Skeleton className="h-12 w-full" />
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <Skeleton variant="circular" className="w-4 h-4" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton variant="circular" className="w-4 h-4" />
+          <Skeleton className="h-4 w-40" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton variant="circular" className="w-4 h-4" />
+          <Skeleton className="h-4 w-28" />
+        </div>
+      </div>
+      <div className="mt-auto pt-2">
+        <Skeleton variant="button" className="w-full h-10" />
+      </div>
+    </div>
+  );
+}
+
+function SkeletonJobCard({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("p-6 rounded-xl bg-card/50 border border-border/50", className)} {...props}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-start gap-4">
+            <Skeleton className="w-12 h-12 rounded-xl flex-shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-5 w-48" />
+                <Skeleton className="h-5 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-4 w-32" />
+              <div className="flex items-center gap-4 mt-2">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-3 w-28" />
+                <Skeleton className="h-3 w-32" />
+              </div>
+              <div className="mt-3 space-y-1">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-4/5" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2 md:flex-col md:items-end">
+          <Skeleton variant="button" className="w-20 h-8" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkeletonEventsGrid({ count = 4, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { count?: number }) {
+  return (
+    <div className={cn("grid md:grid-cols-2 gap-6", className)} {...props}>
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonEventCard key={i} style={{ animationDelay: `${i * 100}ms` }} />
+      ))}
+    </div>
+  );
+}
+
+function SkeletonJobsList({ count = 5, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { count?: number }) {
+  return (
+    <div className={cn("space-y-4", className)} {...props}>
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonJobCard key={i} style={{ animationDelay: `${i * 100}ms` }} />
+      ))}
+    </div>
+  );
+}
+
 export { 
   Skeleton, 
   SkeletonCard, 
@@ -183,5 +267,9 @@ export {
   SkeletonGrid,
   SkeletonStats,
   SkeletonMessage,
-  SkeletonConversation
+  SkeletonConversation,
+  SkeletonEventCard,
+  SkeletonJobCard,
+  SkeletonEventsGrid,
+  SkeletonJobsList,
 };
