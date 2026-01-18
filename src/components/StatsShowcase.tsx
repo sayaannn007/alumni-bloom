@@ -1,10 +1,6 @@
 import { motion } from "framer-motion";
-import { Canvas } from "@react-three/fiber";
-import { Float, Environment } from "@react-three/drei";
 import { Suspense } from "react";
-import { HolographicCube } from "@/components/3d/HolographicCube";
-import { NeonRings } from "@/components/3d/NeonRings";
-import { FloatingDiamond } from "@/components/3d/FloatingDiamond";
+import { StatsScene } from "@/components/3d/StatsScene";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { Users, Building, Globe, ThumbsUp } from "lucide-react";
 
@@ -47,40 +43,13 @@ const stats = [
   },
 ];
 
-function Scene3D() {
-  return (
-    <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#00f2fe" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#bf00ff" />
-      
-      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        <HolographicCube position={[-3, 1, 0]} size={1.2} />
-      </Float>
-      
-      <Float speed={2} rotationIntensity={0.3} floatIntensity={0.8}>
-        <NeonRings position={[3, 0, 0]} scale={0.8} />
-      </Float>
-      
-      <Float speed={1.8} rotationIntensity={0.4} floatIntensity={1.2}>
-        <FloatingDiamond position={[0, -1, 2]} scale={1.5} color="#bf00ff" />
-      </Float>
-      
-      <Environment preset="city" />
-    </>
-  );
-}
 
 export function StatsShowcase() {
   return (
     <section className="relative py-24 md:py-32 px-4 overflow-hidden">
-      {/* 3D Background */}
-      <div className="absolute inset-0 opacity-40">
-        <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-          <Suspense fallback={null}>
-            <Scene3D />
-          </Suspense>
-        </Canvas>
+      {/* Enhanced 3D Background with physics orbs */}
+      <div className="absolute inset-0 opacity-50">
+        <StatsScene />
       </div>
 
       {/* Gradient overlay */}

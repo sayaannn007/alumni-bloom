@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Scene3D } from "@/components/3d/Scene3D";
+import { FeaturesScene } from "@/components/3d/FeaturesScene";
 import { LookingEyes } from "@/components/3d/LookingEyes";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/transitions/ScrollReveal";
 import { GlassCard } from "@/components/GlassCard";
@@ -79,29 +79,31 @@ export function FeaturesSection() {
           {/* Left: 3D Scene */}
           <ScrollReveal variant="slide-left" className="h-[400px] lg:h-[500px]">
             <div className="w-full h-full relative">
-              <Scene3D variant="crystals" />
+              <FeaturesScene />
               
               {/* Floating gradient orbs */}
               <motion.div
-                className="absolute top-10 left-10 w-20 h-20 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-xl"
+                className="absolute top-10 left-10 w-24 h-24 rounded-full bg-gradient-to-br from-primary/40 to-secondary/40 blur-2xl"
                 animate={{
-                  y: [0, -20, 0],
-                  scale: [1, 1.1, 1],
+                  y: [0, -30, 0],
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
               />
               <motion.div
-                className="absolute bottom-10 right-10 w-16 h-16 rounded-full bg-gradient-to-br from-accent/30 to-primary/30 blur-xl"
+                className="absolute bottom-10 right-10 w-20 h-20 rounded-full bg-gradient-to-br from-accent/40 to-primary/40 blur-2xl"
                 animate={{
-                  y: [0, 20, 0],
-                  scale: [1, 0.9, 1],
+                  y: [0, 25, 0],
+                  scale: [1, 0.85, 1],
+                  opacity: [0.4, 0.7, 0.4],
                 }}
                 transition={{
-                  duration: 3,
+                  duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut",
                   delay: 1,

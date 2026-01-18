@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/GlassCard";
-import { HeroScene } from "@/components/3d/HeroScene";
+import { EnhancedHeroScene } from "@/components/3d/EnhancedHeroScene";
 import { Search, Users, ArrowRight, Sparkles } from "lucide-react";
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -67,8 +67,8 @@ export function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 px-4">
-      {/* 3D Background Scene */}
-      <HeroScene />
+      {/* Enhanced 3D Background Scene with geometric elements */}
+      <EnhancedHeroScene />
 
       {/* Gradient overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80 pointer-events-none" />

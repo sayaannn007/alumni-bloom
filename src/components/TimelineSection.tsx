@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { GlassCard } from "@/components/GlassCard";
+import { TimelineScene } from "@/components/3d/TimelineScene";
 import { 
   GraduationCap, 
   Rocket, 
@@ -221,6 +222,11 @@ export function TimelineSection() {
 
   return (
     <section ref={containerRef} id="timeline" className="relative py-20 md:py-32 px-4 bg-gradient-to-b from-background via-background/95 to-background">
+      {/* 3D Background with wireframe grid */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <TimelineScene />
+      </div>
+      
       {/* Animated Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
