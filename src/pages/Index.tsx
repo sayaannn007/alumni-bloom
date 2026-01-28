@@ -15,6 +15,8 @@ import { OnboardingTutorial } from "@/components/OnboardingTutorial";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { FloatingNavOrb } from "@/components/3d/FloatingNavOrb";
 import { AudioVisualizerSection } from "@/components/3d/AudioVisualizerSection";
+import { MorphingCursor } from "@/components/3d/MorphingCursor";
+import { LiquidSceneTransition } from "@/components/transitions/LiquidSceneTransition";
 
 const Index = () => {
 
@@ -22,6 +24,7 @@ const Index = () => {
     <>
       <LoadingScreen />
       <OnboardingTutorial />
+      <MorphingCursor />
       
       <div className="min-h-screen overflow-x-hidden relative scroll-snap-container">
         {/* Parallax Background */}
@@ -32,30 +35,57 @@ const Index = () => {
         
         <Navigation />
         <main className="relative z-10">
-          <section id="hero" className="scroll-snap-section">
-            <HeroSection />
-          </section>
+          <LiquidSceneTransition variant="morph">
+            <section id="hero" className="scroll-snap-section">
+              <HeroSection />
+            </section>
+          </LiquidSceneTransition>
+          
           <DashboardCards />
-          <section id="features" className="scroll-snap-section">
-            <FeaturesSection />
-          </section>
-          <section id="network" className="scroll-snap-section">
-            <NetworkSection />
-          </section>
-          <section id="timeline" className="scroll-snap-section">
-            <TimelineSection />
-          </section>
-          <section id="stats" className="scroll-snap-section">
-            <StatsShowcase />
-          </section>
-          <AudioVisualizerSection />
-          <section id="testimonials" className="scroll-snap-section">
-            <TestimonialsSection />
-          </section>
+          
+          <LiquidSceneTransition variant="wave">
+            <section id="features" className="scroll-snap-section">
+              <FeaturesSection />
+            </section>
+          </LiquidSceneTransition>
+          
+          <LiquidSceneTransition variant="ripple">
+            <section id="network" className="scroll-snap-section">
+              <NetworkSection />
+            </section>
+          </LiquidSceneTransition>
+          
+          <LiquidSceneTransition variant="dissolve">
+            <section id="timeline" className="scroll-snap-section">
+              <TimelineSection />
+            </section>
+          </LiquidSceneTransition>
+          
+          <LiquidSceneTransition variant="morph">
+            <section id="stats" className="scroll-snap-section">
+              <StatsShowcase />
+            </section>
+          </LiquidSceneTransition>
+          
+          <LiquidSceneTransition variant="wave">
+            <section id="audio" className="scroll-snap-section">
+              <AudioVisualizerSection />
+            </section>
+          </LiquidSceneTransition>
+          
+          <LiquidSceneTransition variant="ripple">
+            <section id="testimonials" className="scroll-snap-section">
+              <TestimonialsSection />
+            </section>
+          </LiquidSceneTransition>
+          
           <AlumniDirectory />
-          <section id="cta" className="scroll-snap-section">
-            <CTASection />
-          </section>
+          
+          <LiquidSceneTransition variant="dissolve">
+            <section id="cta" className="scroll-snap-section">
+              <CTASection />
+            </section>
+          </LiquidSceneTransition>
         </main>
         <Footer />
         <FloatingNavOrb />

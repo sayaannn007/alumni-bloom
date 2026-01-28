@@ -1,12 +1,13 @@
 import { Canvas, ThreeEvent } from "@react-three/fiber";
 import { Environment, Float, OrbitControls } from "@react-three/drei";
-import { Suspense, useState, useCallback } from "react";
+import { Suspense, useState, useCallback, useEffect } from "react";
 import * as THREE from "three";
 import { GeometricPolyhedron } from "./GeometricPolyhedron";
 import { MorphingBlob } from "./MorphingBlob";
 import { AbstractSculpture } from "./AbstractSculpture";
 import { ParticleExplosion } from "./ParticleExplosion";
 import { AudioReactiveVisualizer } from "./AudioReactiveVisualizer";
+import { use3DInteraction } from "@/hooks/use3DInteraction";
 
 interface InteractiveSceneProps {
   variant?: "geometric" | "organic" | "audio";
@@ -16,22 +17,33 @@ interface InteractiveSceneProps {
 
 function ClickableElement({ 
   position, 
-  onExplosion 
+  onExplosion,
+  onInteraction
 }: { 
   position: [number, number, number]; 
   onExplosion: (pos: THREE.Vector3) => void;
+  onInteraction?: {
+    onClick: () => void;
+    onHover: () => void;
+  };
 }) {
   const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
     const worldPos = new THREE.Vector3(...position);
     onExplosion(worldPos);
-  }, [position, onExplosion]);
+    onInteraction?.onClick();
+  }, [position, onExplosion, onInteraction]);
+
+  const handlePointerOver = useCallback(() => {
+    document.body.style.cursor = 'pointer';
+    onInteraction?.onHover();
+  }, [onInteraction]);
 
   return (
     <group position={position} onClick={handleClick}>
       <Float speed={2} rotationIntensity={0.5}>
         <mesh
-          onPointerOver={() => document.body.style.cursor = 'pointer'}
+          onPointerOver={handlePointerOver}
           onPointerOut={() => document.body.style.cursor = 'auto'}
         >
           <octahedronGeometry args={[0.3, 0]} />
@@ -55,13 +67,18 @@ function SceneContent({
   enableAudio,
   explosionPosition,
   onExplosion,
-  onExplosionComplete
+  onExplosionComplete,
+  onInteraction
 }: { 
   variant: InteractiveSceneProps["variant"];
   enableAudio?: boolean;
   explosionPosition: THREE.Vector3 | null;
   onExplosion: (pos: THREE.Vector3) => void;
   onExplosionComplete: () => void;
+  onInteraction?: {
+    onClick: () => void;
+    onHover: () => void;
+  };
 }) {
   const clickPositions: [number, number, number][] = [
     [-2, 1, 0],
@@ -90,7 +107,12 @@ function SceneContent({
             <GeometricPolyhedron position={[0, 0, 0]} scale={1.2} />
           </Float>
           {clickPositions.map((pos, i) => (
-            <ClickableElement key={i} position={pos} onExplosion={onExplosion} />
+            <ClickableElement 
+              key={i} 
+              position={pos} 
+              onExplosion={onExplosion}
+              onInteraction={onInteraction}
+            />
           ))}
         </>
       )}
@@ -103,7 +125,12 @@ function SceneContent({
           <AbstractSculpture position={[-2, 0, -1]} scale={0.6} />
           <AbstractSculpture position={[2, 0, -1]} scale={0.6} />
           {clickPositions.slice(0, 3).map((pos, i) => (
-            <ClickableElement key={i} position={pos} onExplosion={onExplosion} />
+            <ClickableElement 
+              key={i} 
+              position={pos} 
+              onExplosion={onExplosion}
+              onInteraction={onInteraction}
+            />
           ))}
         </>
       )}
@@ -112,7 +139,12 @@ function SceneContent({
         <>
           <AudioReactiveVisualizer isEnabled={enableAudio} />
           {clickPositions.map((pos, i) => (
-            <ClickableElement key={i} position={pos} onExplosion={onExplosion} />
+            <ClickableElement 
+              key={i} 
+              position={pos} 
+              onExplosion={onExplosion}
+              onInteraction={onInteraction}
+            />
           ))}
         </>
       )}
@@ -134,11 +166,13 @@ export function InteractiveScene({
 }: InteractiveSceneProps) {
   const [explosionPosition, setExplosionPosition] = useState<THREE.Vector3 | null>(null);
   const [explosionKey, setExplosionKey] = useState(0);
+  const { handleClick, handleHover, handleExplosion } = use3DInteraction();
 
-  const handleExplosion = useCallback((pos: THREE.Vector3) => {
+  const triggerExplosion = useCallback((pos: THREE.Vector3) => {
     setExplosionPosition(pos);
     setExplosionKey(k => k + 1);
-  }, []);
+    handleExplosion();
+  }, [handleExplosion]);
 
   const handleExplosionComplete = useCallback(() => {
     setExplosionPosition(null);
@@ -156,8 +190,12 @@ export function InteractiveScene({
             variant={variant}
             enableAudio={enableAudio}
             explosionPosition={explosionPosition}
-            onExplosion={handleExplosion}
+            onExplosion={triggerExplosion}
             onExplosionComplete={handleExplosionComplete}
+            onInteraction={{
+              onClick: handleClick,
+              onHover: handleHover,
+            }}
           />
           <OrbitControls 
             enableZoom={false} 
