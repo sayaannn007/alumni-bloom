@@ -13,6 +13,8 @@ import { ParallaxBackground } from "@/components/effects/ParallaxBackground";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { OnboardingTutorial } from "@/components/OnboardingTutorial";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { FloatingNavOrb } from "@/components/3d/FloatingNavOrb";
+import { AudioVisualizerSection } from "@/components/3d/AudioVisualizerSection";
 
 const Index = () => {
 
@@ -46,6 +48,7 @@ const Index = () => {
           <section id="stats" className="scroll-snap-section">
             <StatsShowcase />
           </section>
+          <AudioVisualizerSection />
           <section id="testimonials" className="scroll-snap-section">
             <TestimonialsSection />
           </section>
@@ -55,6 +58,7 @@ const Index = () => {
           </section>
         </main>
         <Footer />
+        <FloatingNavOrb />
       </div>
     </>
   );
