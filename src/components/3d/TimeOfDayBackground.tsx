@@ -199,6 +199,259 @@ function AtmosphericParticles({ timeOfDay }: { timeOfDay: TimeOfDay }) {
   );
 }
 
+interface ShootingStar {
+  id: number;
+  startPos: THREE.Vector3;
+  endPos: THREE.Vector3;
+  speed: number;
+  size: number;
+  color: THREE.Color;
+  progress: number;
+  active: boolean;
+  trailLength: number;
+}
+
+function ShootingStars({ enabled }: { enabled: boolean }) {
+  const [stars, setStars] = useState<ShootingStar[]>([]);
+  const groupRef = useRef<THREE.Group>(null);
+  const nextIdRef = useRef(0);
+
+  // Spawn shooting stars randomly
+  useEffect(() => {
+    if (!enabled) return;
+
+    const spawnStar = () => {
+      const startX = (Math.random() - 0.5) * 60;
+      const startY = 15 + Math.random() * 15;
+      const startZ = -20 - Math.random() * 20;
+      
+      const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
+      const distance = 30 + Math.random() * 20;
+      
+      const newStar: ShootingStar = {
+        id: nextIdRef.current++,
+        startPos: new THREE.Vector3(startX, startY, startZ),
+        endPos: new THREE.Vector3(
+          startX + Math.cos(angle) * distance,
+          startY - Math.sin(angle) * distance,
+          startZ
+        ),
+        speed: 0.8 + Math.random() * 0.8,
+        size: 0.08 + Math.random() * 0.12,
+        color: new THREE.Color().setHSL(0.1 + Math.random() * 0.1, 0.8, 0.9),
+        progress: 0,
+        active: true,
+        trailLength: 8 + Math.random() * 12,
+      };
+      
+      setStars(prev => [...prev, newStar]);
+    };
+
+    // Initial spawn
+    const initialTimeout = setTimeout(spawnStar, 2000);
+    
+    // Random interval spawning (every 3-8 seconds)
+    const interval = setInterval(() => {
+      if (Math.random() < 0.6) {
+        spawnStar();
+      }
+    }, 3000 + Math.random() * 5000);
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(interval);
+    };
+  }, [enabled]);
+
+  useFrame((_, delta) => {
+    setStars(prev => 
+      prev
+        .map(star => ({
+          ...star,
+          progress: star.progress + delta * star.speed,
+          active: star.progress < 1.5,
+        }))
+        .filter(star => star.active)
+    );
+  });
+
+  if (!enabled) return null;
+
+  return (
+    <group ref={groupRef}>
+      {stars.map(star => (
+        <ShootingStarMesh key={star.id} star={star} />
+      ))}
+    </group>
+  );
+}
+
+function ShootingStarMesh({ star }: { star: ShootingStar }) {
+  const currentPos = useMemo(() => {
+    return new THREE.Vector3().lerpVectors(star.startPos, star.endPos, Math.min(star.progress, 1));
+  }, [star.startPos, star.endPos, star.progress]);
+
+  const trailLine = useMemo(() => {
+    const points: THREE.Vector3[] = [];
+    const segments = 20;
+    
+    for (let i = 0; i <= segments; i++) {
+      const t = Math.max(0, Math.min(1, star.progress - (i / segments) * 0.3));
+      points.push(new THREE.Vector3().lerpVectors(star.startPos, star.endPos, t));
+    }
+    
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
+      color: star.color,
+      transparent: true,
+      opacity: star.progress > 1 ? Math.max(0, 1 - (star.progress - 1) * 2) * 0.6 : 0.6,
+    });
+    
+    return new THREE.Line(geometry, material);
+  }, [star.startPos, star.endPos, star.progress, star.color]);
+
+  const opacity = star.progress > 1 ? Math.max(0, 1 - (star.progress - 1) * 2) : 1;
+
+  return (
+    <group>
+      {/* Main star head */}
+      <mesh position={currentPos}>
+        <sphereGeometry args={[star.size, 8, 8]} />
+        <meshBasicMaterial
+          color={star.color}
+          transparent
+          opacity={opacity}
+        />
+      </mesh>
+      
+      {/* Glow around head */}
+      <mesh position={currentPos}>
+        <sphereGeometry args={[star.size * 2, 8, 8]} />
+        <meshBasicMaterial
+          color={star.color}
+          transparent
+          opacity={opacity * 0.4}
+        />
+      </mesh>
+      
+      {/* Trail */}
+      <primitive object={trailLine} />
+    </group>
+  );
+}
+
+function MeteorShower({ enabled }: { enabled: boolean }) {
+  const [meteors, setMeteors] = useState<ShootingStar[]>([]);
+  const nextIdRef = useRef(0);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    // Occasional meteor shower (every 20-40 seconds, spawn 3-6 meteors)
+    const showerInterval = setInterval(() => {
+      if (Math.random() < 0.3) {
+        const count = 3 + Math.floor(Math.random() * 4);
+        const newMeteors: ShootingStar[] = [];
+        
+        for (let i = 0; i < count; i++) {
+          const startX = (Math.random() - 0.5) * 40;
+          const startY = 20 + Math.random() * 10;
+          const startZ = -15 - Math.random() * 15;
+          
+          newMeteors.push({
+            id: nextIdRef.current++,
+            startPos: new THREE.Vector3(startX, startY, startZ),
+            endPos: new THREE.Vector3(
+              startX + 25 + Math.random() * 15,
+              startY - 20 - Math.random() * 10,
+              startZ
+            ),
+            speed: 1.2 + Math.random() * 0.6,
+            size: 0.15 + Math.random() * 0.15,
+            color: new THREE.Color().setHSL(0.08, 1, 0.7),
+            progress: i * 0.1, // Stagger the meteors
+            active: true,
+            trailLength: 15 + Math.random() * 10,
+          });
+        }
+        
+        setMeteors(prev => [...prev, ...newMeteors]);
+      }
+    }, 20000 + Math.random() * 20000);
+
+    return () => clearInterval(showerInterval);
+  }, [enabled]);
+
+  useFrame((_, delta) => {
+    setMeteors(prev =>
+      prev
+        .map(meteor => ({
+          ...meteor,
+          progress: meteor.progress + delta * meteor.speed,
+          active: meteor.progress < 1.5,
+        }))
+        .filter(meteor => meteor.active)
+    );
+  });
+
+  if (!enabled) return null;
+
+  return (
+    <group>
+      {meteors.map(meteor => (
+        <MeteorMesh key={meteor.id} meteor={meteor} />
+      ))}
+    </group>
+  );
+}
+
+function MeteorMesh({ meteor }: { meteor: ShootingStar }) {
+  const currentPos = useMemo(() => {
+    return new THREE.Vector3().lerpVectors(meteor.startPos, meteor.endPos, Math.min(meteor.progress, 1));
+  }, [meteor.startPos, meteor.endPos, meteor.progress]);
+
+  const trailLine = useMemo(() => {
+    const points: THREE.Vector3[] = [];
+    const segments = 30;
+    
+    for (let i = 0; i <= segments; i++) {
+      const t = Math.max(0, Math.min(1, meteor.progress - (i / segments) * 0.4));
+      points.push(new THREE.Vector3().lerpVectors(meteor.startPos, meteor.endPos, t));
+    }
+    
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const opacity = meteor.progress > 1 ? Math.max(0, 1 - (meteor.progress - 1) * 2) : 1;
+    const material = new THREE.LineBasicMaterial({
+      color: "#ff6b35",
+      transparent: true,
+      opacity: opacity * 0.8,
+    });
+    
+    return new THREE.Line(geometry, material);
+  }, [meteor.startPos, meteor.endPos, meteor.progress]);
+
+  const opacity = meteor.progress > 1 ? Math.max(0, 1 - (meteor.progress - 1) * 2) : 1;
+
+  return (
+    <group>
+      {/* Meteor head with fiery glow */}
+      <mesh position={currentPos}>
+        <sphereGeometry args={[meteor.size, 12, 12]} />
+        <meshBasicMaterial color="#ff6b35" transparent opacity={opacity} />
+      </mesh>
+      
+      {/* Outer glow */}
+      <mesh position={currentPos}>
+        <sphereGeometry args={[meteor.size * 3, 12, 12]} />
+        <meshBasicMaterial color="#ff9f43" transparent opacity={opacity * 0.3} />
+      </mesh>
+      
+      {/* Fiery trail */}
+      <primitive object={trailLine} />
+    </group>
+  );
+}
+
 function HorizonGlow({ config }: { config: TimeConfig }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -258,6 +511,8 @@ function SkyGradient({ config }: { config: TimeConfig }) {
 }
 
 function SceneContent({ timeOfDay, config }: { timeOfDay: TimeOfDay; config: TimeConfig }) {
+  const isNightOrDusk = timeOfDay === "night" || timeOfDay === "dusk";
+  
   return (
     <>
       <SkyGradient config={config} />
@@ -282,6 +537,10 @@ function SceneContent({ timeOfDay, config }: { timeOfDay: TimeOfDay; config: Tim
           fade
         />
       )}
+      
+      {/* Shooting stars and meteors during night/dusk */}
+      <ShootingStars enabled={isNightOrDusk} />
+      <MeteorShower enabled={timeOfDay === "night"} />
       
       <FloatingClouds opacity={config.cloudOpacity} />
       <AtmosphericParticles timeOfDay={timeOfDay} />
