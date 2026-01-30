@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
+import { useSettings } from "@/contexts/SettingsContext";
 
 type CursorShape = "sphere" | "cube" | "octahedron" | "torus" | "cone";
 
@@ -18,7 +19,6 @@ function MorphingMesh({ shape, targetPosition }: MorphingMeshProps) {
   useFrame((state) => {
     if (!meshRef.current) return;
     
-    // Convert screen coordinates to 3D space
     const x = (targetPosition.x / window.innerWidth) * viewport.width - viewport.width / 2;
     const y = -(targetPosition.y / window.innerHeight) * viewport.height + viewport.height / 2;
     
@@ -28,7 +28,6 @@ function MorphingMesh({ shape, targetPosition }: MorphingMeshProps) {
     meshRef.current.rotation.x += 0.02;
     meshRef.current.rotation.y += 0.03;
     
-    // Pulse effect
     const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.1;
     meshRef.current.scale.setScalar(scale);
   });
@@ -80,15 +79,16 @@ const sectionShapeMap: Record<string, CursorShape> = {
 export function MorphingCursor() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentShape, setCurrentShape] = useState<CursorShape>("sphere");
-  const [isVisible, setIsVisible] = useState(true);
+  const { settings } = useSettings();
 
   useEffect(() => {
+    if (!settings.morphingCursorEnabled) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
 
     const handleScroll = () => {
-      // Detect which section is in view
       const sections = Object.keys(sectionShapeMap);
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -102,32 +102,16 @@ export function MorphingCursor() {
       }
     };
 
-    // Check settings
-    const checkSettings = () => {
-      try {
-        const stored = localStorage.getItem("alumniconnect-settings");
-        if (stored) {
-          const settings = JSON.parse(stored);
-          setIsVisible(settings.cursorTrailEnabled !== false);
-        }
-      } catch {
-        // ignore
-      }
-    };
-
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll);
-    checkSettings();
-    const interval = setInterval(checkSettings, 500);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
-      clearInterval(interval);
     };
-  }, []);
+  }, [settings.morphingCursorEnabled]);
 
-  if (!isVisible) return null;
+  if (!settings.morphingCursorEnabled) return null;
 
   return (
     <motion.div

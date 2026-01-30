@@ -16,6 +16,7 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { FloatingNavOrb } from "@/components/3d/FloatingNavOrb";
 import { AudioVisualizerSection } from "@/components/3d/AudioVisualizerSection";
 import { MorphingCursor } from "@/components/3d/MorphingCursor";
+import { MiniMap3D } from "@/components/3d/MiniMap3D";
 import { LiquidSceneTransition } from "@/components/transitions/LiquidSceneTransition";
 
 const Index = () => {
@@ -89,6 +90,7 @@ const Index = () => {
         </main>
         <Footer />
         <FloatingNavOrb />
+        <MiniMap3D />
       </div>
     </>
   );

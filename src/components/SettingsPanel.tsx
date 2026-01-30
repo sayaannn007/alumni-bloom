@@ -16,6 +16,9 @@ import {
   MessageSquare,
   Users,
   Loader2,
+  Box,
+  Droplets,
+  Map,
 } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Slider } from "@/components/ui/slider";
@@ -245,6 +248,39 @@ export const SettingsPanel = () => {
                       <Switch
                         checked={settings.scrollSnapEnabled}
                         onCheckedChange={(checked) => updateSetting("scrollSnapEnabled", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Box className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">3D morphing cursor</span>
+                      </div>
+                      <Switch
+                        checked={settings.morphingCursorEnabled}
+                        onCheckedChange={(checked) => updateSetting("morphingCursorEnabled", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Droplets className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Liquid transitions</span>
+                      </div>
+                      <Switch
+                        checked={settings.liquidTransitionsEnabled}
+                        onCheckedChange={(checked) => updateSetting("liquidTransitionsEnabled", checked)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Map className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">3D mini-map</span>
+                      </div>
+                      <Switch
+                        checked={settings.miniMapEnabled}
+                        onCheckedChange={(checked) => updateSetting("miniMapEnabled", checked)}
                       />
                     </div>
                   </div>

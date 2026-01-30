@@ -9,6 +9,9 @@ interface Settings {
   cursorTrailEnabled: boolean;
   parallaxEnabled: boolean;
   scrollSnapEnabled: boolean;
+  morphingCursorEnabled: boolean;
+  liquidTransitionsEnabled: boolean;
+  miniMapEnabled: boolean;
   // Notification settings
   emailNotifications: boolean;
   pushNotifications: boolean;
@@ -32,6 +35,9 @@ const defaultSettings: Settings = {
   cursorTrailEnabled: true,
   parallaxEnabled: true,
   scrollSnapEnabled: true,
+  morphingCursorEnabled: true,
+  liquidTransitionsEnabled: true,
+  miniMapEnabled: true,
   // Notification defaults
   emailNotifications: true,
   pushNotifications: true,
