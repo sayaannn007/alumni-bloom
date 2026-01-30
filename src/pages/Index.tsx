@@ -17,6 +17,7 @@ import { FloatingNavOrb } from "@/components/3d/FloatingNavOrb";
 import { AudioVisualizerSection } from "@/components/3d/AudioVisualizerSection";
 import { MorphingCursor } from "@/components/3d/MorphingCursor";
 import { MiniMap3D } from "@/components/3d/MiniMap3D";
+import { TimeOfDayBackground } from "@/components/3d/TimeOfDayBackground";
 import { LiquidSceneTransition } from "@/components/transitions/LiquidSceneTransition";
 
 const Index = () => {
@@ -26,6 +27,7 @@ const Index = () => {
       <LoadingScreen />
       <OnboardingTutorial />
       <MorphingCursor />
+      <TimeOfDayBackground />
       
       <div className="min-h-screen overflow-x-hidden relative scroll-snap-container">
         {/* Parallax Background */}
