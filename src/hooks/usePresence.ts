@@ -11,7 +11,7 @@ export function usePresence(currentProfileId: string | null) {
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map());
   const channelRef = useRef<RealtimeChannel | null>(null);
-  const typingTimeoutRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const typingTimeoutRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   useEffect(() => {
     if (!currentProfileId) return;
