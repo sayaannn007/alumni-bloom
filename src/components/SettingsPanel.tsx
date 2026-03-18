@@ -19,11 +19,14 @@ import {
   Box,
   Droplets,
   Map,
+  Sun,
 } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
+import { TimeOfDayOverride } from "@/contexts/SettingsContext";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useInteractionFeedback } from "@/hooks/useInteractionFeedback";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 
