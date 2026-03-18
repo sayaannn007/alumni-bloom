@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+export type TimeOfDayOverride = "auto" | "dawn" | "day" | "dusk" | "night";
+
 interface Settings {
   soundEnabled: boolean;
   soundVolume: number; // 0-1
@@ -18,6 +20,7 @@ interface Settings {
   messageNotifications: boolean;
   eventReminders: boolean;
   connectionRequests: boolean;
+  timeOfDayOverride: TimeOfDayOverride;
 }
 
 interface SettingsContextType {
@@ -44,6 +47,7 @@ const defaultSettings: Settings = {
   messageNotifications: true,
   eventReminders: true,
   connectionRequests: true,
+  timeOfDayOverride: "auto" as TimeOfDayOverride,
 };
 
 const STORAGE_KEY = "alumniconnect-settings";

@@ -19,11 +19,14 @@ import {
   Box,
   Droplets,
   Map,
+  Sun,
 } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
+import { TimeOfDayOverride } from "@/contexts/SettingsContext";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useInteractionFeedback } from "@/hooks/useInteractionFeedback";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 
@@ -282,6 +285,28 @@ export const SettingsPanel = () => {
                         checked={settings.miniMapEnabled}
                         onCheckedChange={(checked) => updateSetting("miniMapEnabled", checked)}
                       />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sun className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Time of day</span>
+                      </div>
+                      <Select
+                        value={settings.timeOfDayOverride}
+                        onValueChange={(val) => updateSetting("timeOfDayOverride", val as TimeOfDayOverride)}
+                      >
+                        <SelectTrigger className="w-24 h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="auto">Auto</SelectItem>
+                          <SelectItem value="dawn">Dawn</SelectItem>
+                          <SelectItem value="day">Day</SelectItem>
+                          <SelectItem value="dusk">Dusk</SelectItem>
+                          <SelectItem value="night">Night</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>

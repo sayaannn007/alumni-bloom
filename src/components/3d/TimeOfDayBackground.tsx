@@ -552,17 +552,17 @@ function SceneContent({ timeOfDay, config }: { timeOfDay: TimeOfDay; config: Tim
 }
 
 export function TimeOfDayBackground() {
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(getTimeOfDay);
   const { settings } = useSettings();
+  const [autoTime, setAutoTime] = useState<TimeOfDay>(getTimeOfDay);
   
   useEffect(() => {
-    // Update time every minute
     const interval = setInterval(() => {
-      setTimeOfDay(getTimeOfDay());
+      setAutoTime(getTimeOfDay());
     }, 60000);
-    
     return () => clearInterval(interval);
   }, []);
+
+  const timeOfDay: TimeOfDay = settings.timeOfDayOverride === "auto" ? autoTime : settings.timeOfDayOverride as TimeOfDay;
 
   const config = timeConfigs[timeOfDay];
 
