@@ -20,6 +20,7 @@ interface Settings {
   messageNotifications: boolean;
   eventReminders: boolean;
   connectionRequests: boolean;
+  timeOfDayOverride: TimeOfDayOverride;
 }
 
 interface SettingsContextType {
