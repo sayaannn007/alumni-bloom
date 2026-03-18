@@ -47,6 +47,7 @@ const defaultSettings: Settings = {
   messageNotifications: true,
   eventReminders: true,
   connectionRequests: true,
+  timeOfDayOverride: "auto" as TimeOfDayOverride,
 };
 
 const STORAGE_KEY = "alumniconnect-settings";
