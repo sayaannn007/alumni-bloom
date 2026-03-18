@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+export type TimeOfDayOverride = "auto" | "dawn" | "day" | "dusk" | "night";
+
 interface Settings {
   soundEnabled: boolean;
   soundVolume: number; // 0-1
